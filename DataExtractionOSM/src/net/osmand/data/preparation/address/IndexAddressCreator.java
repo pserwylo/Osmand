@@ -58,7 +58,7 @@ import org.apache.commons.logging.LogFactory;
 
 public class IndexAddressCreator extends AbstractIndexPartCreator{
 	
-	private static final Log log = LogFactory.getLog(IndexAddressCreator.class);
+	private AddressLogDAO log;
 	private final Log logMapDataWarn;
 
 	private PreparedStatement addressCityStat;
@@ -69,6 +69,7 @@ public class IndexAddressCreator extends AbstractIndexPartCreator{
 	// MEMORY address : address structure
 	// load it in memory
 	private Map<EntityId, City> cities = new LinkedHashMap<EntityId, City>();
+	//TODO use R-Tree instead of data tile manager??
 	private DataTileManager<City> cityVillageManager = new DataTileManager<City>(13);
 	private DataTileManager<City> cityManager = new DataTileManager<City>(10);
 	private List<Relation> postalCodeRelations = new ArrayList<Relation>();
@@ -110,6 +111,7 @@ public class IndexAddressCreator extends AbstractIndexPartCreator{
 	public IndexAddressCreator(Log logMapDataWarn){
 		this.logMapDataWarn = logMapDataWarn;
 		streetDAO = loadInMemory ? new CachedDBStreetDAO() : new DBStreetDAO();
+		log = new AddressLogDAO(LogFactory.getLog(IndexAddressCreator.class));
 	}
 	
 	
@@ -148,13 +150,18 @@ public class IndexAddressCreator extends AbstractIndexPartCreator{
 
 			City cityFound = null;
 			String boundaryName = boundary.getName().toLowerCase();
+			String reason = null;
 			for (City c : citiesToSearch) {
+				//TODO we might miss the adminCenterId if it is not the first city,
+				//which might be.. better would be have this before this cycle...
 				if (c.getId() == boundary.getAdminCenterId()) {
 					cityFound = c;
+					reason = " boundary has town as admin_center";
 					break;
 				} else if (boundary.containsPoint(c.getLocation())) {
 					if (boundaryName.equalsIgnoreCase(c.getName())) {
 						cityFound = c;
+						reason = " boundary has same name as town";
 						break;
 					}
 				}
@@ -167,21 +174,21 @@ public class IndexAddressCreator extends AbstractIndexPartCreator{
 						String lower = c.getName().toLowerCase();
 						if (boundaryName.startsWith(lower + " ") || boundaryName.endsWith(" " + lower) || boundaryName.contains(" " + lower + " ")) {
 							cityFound = c;
+							reason = " boundary has similar name as town";
 							break;
 						}
 					}
 				}
 			}
 			if (cityFound != null) {
-				putCityBoundary(boundary, cityFound);
+				putCityBoundary(boundary, cityFound, reason);
 			}
 			allBoundaries.add(boundary);
 		} else if (boundary != null){
 			if(logMapDataWarn != null) {
 				logMapDataWarn.warn("Not using boundary: " + boundary);
-			} else {
-				log.info("Not using boundary: " + boundary);
 			}
+			log.boundaryEvent(boundary, "Boundary not used, admin_level < 4 or centerPoint is null or the name is null");
 		}
 	}
 
@@ -192,9 +199,9 @@ public class IndexAddressCreator extends AbstractIndexPartCreator{
 		//for cities without boundaries, try to find the right one
 		for (City c : cities.values()) {
 			progress.progress(1);
-			Boundary cityB = cityBoundaries.get(c);
+			Boundary oldBoundary = cityBoundaries.get(c);
 			int smallestAdminLevel = 8; //TODO start at level 8 for now...
-			if (cityB == null) {
+			if (oldBoundary == null) {
 				LatLon location = c.getLocation();
 				Boundary smallestBoundary = null;
 				//try to found boundary
@@ -208,11 +215,9 @@ public class IndexAddressCreator extends AbstractIndexPartCreator{
 					}
 				}
 				if (smallestBoundary != null) {
-					Boundary oldBoundary = putCityBoundary(smallestBoundary,c);
+					//there should be no oldBoundary here, checked before!
+					putCityBoundary(smallestBoundary,c, " smallest boundary for that city");
 					freeBoundaries.remove(smallestBoundary);
-					if (oldBoundary != null) {
-						freeBoundaries.add(oldBoundary);
-					}
 				}
 			}
 		}
@@ -246,32 +251,33 @@ public class IndexAddressCreator extends AbstractIndexPartCreator{
 		}
 	}
 
-	private Boundary putCityBoundary(Boundary boundary, City cityFound) {
+	private Boundary putCityBoundary(Boundary boundary, City cityFound, String reason) {
 		final Boundary oldBoundary = cityBoundaries.get(cityFound);
 		if (oldBoundary != null) {
 			if (boundary.getAdminCenterId() == cityFound.getId()
 					&& badBoundary(cityFound, oldBoundary)) {
 				cityBoundaries.put(cityFound, boundary);
-				logBoundaryChanged(boundary, cityFound);
+				logBoundaryChanged(boundary, cityFound, oldBoundary, " new boundary has city as admin center");
 			} else
 			// try to found the biggest area (not small center district)
 			if (oldBoundary.getAdminLevel() > boundary.getAdminLevel()
 					&& badBoundary(cityFound, oldBoundary)) {
 				cityBoundaries.put(cityFound, boundary);
-				logBoundaryChanged(boundary, cityFound);
+				logBoundaryChanged(boundary, cityFound, oldBoundary, " new boundary has lower admin level");
 			} else if (boundary.getName().equalsIgnoreCase(cityFound.getName())
 					&& badBoundary(cityFound, oldBoundary)) {
 				cityBoundaries.put(cityFound, boundary);
-				logBoundaryChanged(boundary, cityFound);
+				logBoundaryChanged(boundary, cityFound, oldBoundary, " new boundary has exact name match");
 			} else if (oldBoundary.getAdminLevel() == boundary.getAdminLevel()
 					&& oldBoundary != boundary
 					&& boundary.getName().equalsIgnoreCase(
 							oldBoundary.getName())) {
 				oldBoundary.copyPolygonsFrom(boundary);
+				log.boundaryEvent(oldBoundary, "Get polygons from boundary: " + boundary + " as it has same name and admin_level");
 			}
 		} else {
 			cityBoundaries.put(cityFound, boundary);
-			logBoundaryChanged(boundary, cityFound);
+			logBoundaryChanged(boundary, cityFound, null, reason);
 		}
 		return oldBoundary;
 	}
@@ -283,13 +289,14 @@ public class IndexAddressCreator extends AbstractIndexPartCreator{
 	}
 
 
-	private void logBoundaryChanged(Boundary boundary, City cityFound) {
+	private void logBoundaryChanged(Boundary boundary, City cityFound, Boundary oldBoundary, String reason) {
 		String s = "City: " + cityFound.getName() + " boundary: " + boundary.getName();
 		if(logMapDataWarn != null) {
 			logMapDataWarn.info(s);
-		} else {
-			log.info(s);
 		}
+		log.boundaryEvent(oldBoundary, "City:" + cityFound + " not using the boundary. New boundary has: " + reason);
+		log.boundaryEvent(boundary, "Added to city:" + cityFound + " because " + reason);
+		log.cityEvent(cityFound, "Using boundary:" + boundary + " instead of boundary " + boundary + " because " + reason);
 	}
 
 	private boolean isBoundary(Entity e) {
@@ -340,10 +347,20 @@ public class IndexAddressCreator extends AbstractIndexPartCreator{
 		}
 	}
 	
+	
+	/**
+	 * Postal address handling by relations
+	 * http://wiki.openstreetmap.org/wiki/Relations/Proposed/Postal_Addresses
+	 * 
+	 * @param i
+	 * @param ctx
+	 * @throws SQLException
+	 */
 	public void indexAddressRelation(Relation i, OsmDbAccessorContext ctx) throws SQLException {
 		if (i instanceof Relation && "address".equals(i.getTag(OSMTagKey.TYPE))) { //$NON-NLS-1$
 			String type = i.getTag(OSMTagKey.ADDRESS_TYPE);
-			boolean house = "house".equals(type); //$NON-NLS-1$
+			//TODO we could handle also address:type=hns ?
+			boolean house = "house".equals(type) || "hno".equals(type); //$NON-NLS-1$
 			boolean street = "a6".equals(type); //$NON-NLS-1$
 			if (house || street) {
 				// try to find appropriate city/street
@@ -352,41 +369,46 @@ public class IndexAddressCreator extends AbstractIndexPartCreator{
 				ctx.loadEntityRelation(i);
 
 				Collection<Entity> members = i.getMembers("is_in"); //$NON-NLS-1$
-				Relation a3 = null;
-				Relation a6 = null;
+				Relation a3_city = null;
+				Relation a6_street = null;
 				if (!members.isEmpty()) {
 					if (street) {
-						a6 = i;
+						a6_street = i;
 					}
 					Entity in = members.iterator().next();
 					if (in instanceof Relation) {
 						ctx.loadEntityRelation((Relation) in);
 						// go one level up for house
+						//TODO, this does not work:
+						//1. there can be more levels
+						//2. we have to check again the address:type is a3
+						//3. there can be also address:a3 tag !!
 						if (house) {
-							a6 = (Relation) in;
+							a6_street = (Relation) in;
 							members = ((Relation) in).getMembers("is_in"); //$NON-NLS-1$
 							if (!members.isEmpty()) {
 								in = members.iterator().next();
 								if (in instanceof Relation) {
 									ctx.loadEntityRelation((Relation) in);
-									a3 = (Relation) in;
+									a3_city = (Relation) in;
 								}
 							}
 
 						} else {
-							a3 = (Relation) in;
+							a3_city = (Relation) in;
 						}
 					}
 				}
 
-				if (a3 != null) {
-					Collection<EntityId> memberIds = a3.getMemberIds("label"); //$NON-NLS-1$
+				if (a3_city != null) {
+					//TODO label can be missing, name denotes the city name also!
+					Collection<EntityId> memberIds = a3_city.getMemberIds("label"); //$NON-NLS-1$
 					if (!memberIds.isEmpty()) {
 						c = cities.get(memberIds.iterator().next());
 					}
 				}
-				if (c != null && a6 != null) {
-					String name = a6.getTag(OSMTagKey.NAME);
+				if (c != null && a6_street != null) {
+					String name = a6_street.getTag(OSMTagKey.NAME);
 
 					if (name != null) {
 						LatLon location = c.getLocation();
@@ -402,10 +424,16 @@ public class IndexAddressCreator extends AbstractIndexPartCreator{
 
 						Set<Long> streetId = registerStreetInCities(name, null, location, Collections.singletonList(c));
 						if (streetId == null) {
+							if (street) {
+								log.streetEvent(i, name, "Street ("+ name +") was not registered for city: " + c);
+							} else if (house) {
+								log.houseEvent(i,  name, "Street ("+ name +") was not registered for city: " + c);
+							}
 							return;
 						}
 						if (street) {
 							for (Map.Entry<Entity, String> r : i.getMemberEntities().entrySet()) {
+								//TODO: strange, the rfc does not talk about street and house members!
 								if ("street".equals(r.getValue())) { //$NON-NLS-1$
 									if (r.getKey() instanceof Way) {
 										streetDAO.writeStreetWayNodes(streetId, (Way) r.getKey());
@@ -413,6 +441,7 @@ public class IndexAddressCreator extends AbstractIndexPartCreator{
 								} else if ("house".equals(r.getValue())) { //$NON-NLS-1$
 									// will be registered further in other case
 									if (!(r.getKey() instanceof Relation)) {
+										//TODO: strange, this is part of other postal address types!!
 										String hno = r.getKey().getTag(OSMTagKey.ADDR_HOUSE_NUMBER);
 										if (hno != null) {
 											Building building = new Building(r.getKey());
@@ -422,34 +451,49 @@ public class IndexAddressCreator extends AbstractIndexPartCreator{
 									}
 								}
 							}
-						} else {
+						} else { //house == true, street = false
 							String hno = i.getTag(OSMTagKey.ADDRESS_HOUSE);
 							if (hno == null) {
+								//TODO strange, this is part of other address resolving types..
 								hno = i.getTag(OSMTagKey.ADDR_HOUSE_NUMBER);
 							}
 							if (hno == null) {
 								hno = i.getTag(OSMTagKey.NAME);
 							}
+							//TODO we could use also label for the house?
 							members = i.getMembers("border"); //$NON-NLS-1$
 							if (!members.isEmpty()) {
 								Entity border = members.iterator().next();
 								if (border != null) {
 									EntityId id = EntityId.valueOf(border);
 									// special check that address do not contain twice in a3 - border and separate a6
-									if (!a6.getMemberIds().contains(id)) {
+									if (!a6_street.getMemberIds().contains(id)) {
 										Building building = new Building(border);
 										if (building.getLocation() != null) {
 											building.setName(hno);
 											streetDAO.writeBuilding(streetId, building);
 										} else {
-											log.error("Strange border " + id + " location couldn't be found");
+											log.houseEvent(i, " House (" + hno +") border " + id + " location couldn't be found. Not registered.");
 										}
+									} else {
+										log.houseEvent(i, " House not part of the street: " + a6_street.getId());
 									}
+								} else {
+									log.houseEvent(i, "For house no border was found"); //$NON-NLS-1$
 								}
 							} else {
-								log.info("For relation " + i.getId() + " border not found"); //$NON-NLS-1$ //$NON-NLS-2$
+								log.houseEvent(i, "For house no border was found"); //$NON-NLS-1$
 							}
-
+						}
+					}
+				} else {
+					if (street) {
+						log.streetEvent(i, a6_street.getTag(OSMTagKey.NAME), " could not find city for street"+ a6_street.getTag(OSMTagKey.NAME)+ ", not registering");
+					} else if (house) {
+						if (a6_street == null) {
+							log.houseEvent(i, null, " could not find street for house ");
+						} else {
+							log.streetEvent(i, a6_street.getTag(OSMTagKey.NAME), " could not find city for house in street: "+ a6_street.getTag(OSMTagKey.NAME)+ ", not registering");
 						}
 					}
 				}
@@ -588,6 +632,7 @@ public class IndexAddressCreator extends AbstractIndexPartCreator{
 				//by default write city with cityPart of the city
 				long streetId = streetDAO.insertStreet(name, nameEn, location, city, cityPart);
 				values.add(streetId);
+				log.streetEvent(name, " street inserted for city:" + city + " city part: " + cityPart + " and location: " + location);
 			} else {
 				values.add(foundStreet.getId());
 			}
@@ -673,6 +718,8 @@ public class IndexAddressCreator extends AbstractIndexPartCreator{
 		// index not only buildings but also nodes that belongs to addr:interpolation ways
 		// currently not supported because nodes are indexed first with buildings 
 		if (e instanceof Way && e.getTag(OSMTagKey.ADDR_INTERPOLATION) != null ){
+			//http://wiki.openstreetmap.org/wiki/Addresses#Using_interpolation
+			//http://wiki.openstreetmap.org/wiki/Key:addr
 			BuildingInterpolation type = null;
 			int interpolationInterval = 0;
 			if(e.getTag(OSMTagKey.ADDR_INTERPOLATION) != null) {
@@ -681,10 +728,12 @@ public class IndexAddressCreator extends AbstractIndexPartCreator{
 				} catch (RuntimeException ex) {
 					try {
 						interpolationInterval = Integer.parseInt(e.getTag(OSMTagKey.ADDR_INTERPOLATION));
+						type = BuildingInterpolation.ALL;
 					} catch(NumberFormatException ex2) {
 					}
 				}
 			}
+			//TODO if interpolation is a number, type will be null !!!! condition will not work...
 			if (type != null && interpolationInterval > 0) {
 				List<Node> nodesWithHno = new ArrayList<Node>();
 				for (Node n : ((Way) e).getNodes()) {
@@ -698,6 +747,7 @@ public class IndexAddressCreator extends AbstractIndexPartCreator{
 						Node second = nodesWithHno.get(i);
 						boolean exist = streetDAO.findBuilding(first);
 						if (exist) {
+							//TODO in spec it is that buildings bound to nodes should have precedence. We do oposit here!
 							streetDAO.removeBuilding(first);
 						}
 						LatLon l = e.getLatLon();
@@ -710,9 +760,13 @@ public class IndexAddressCreator extends AbstractIndexPartCreator{
 							building.setName2(second.getTag(OSMTagKey.ADDR_HOUSE_NUMBER));
 							building.setLatLon2(second.getLatLon());
 							streetDAO.writeBuilding(idsOfStreet, building);
+						} else {
+							log.houseEvent(first, " could not find street for the building!");
 						}
 					}
 				}
+			} else {
+				log.houseEvent((Way)e, " Interpolation could not be interpreted, type:" + type + " interval: " + interpolationInterval);
 			}
 		} 
 		if (e.getTag(OSMTagKey.ADDR_HOUSE_NUMBER) != null && e.getTag(OSMTagKey.ADDR_STREET) != null) {
@@ -726,6 +780,7 @@ public class IndexAddressCreator extends AbstractIndexPartCreator{
 					int i = hno.indexOf('-');
 					if(i != -1) {
 						building.setInterpolationInterval(1);
+						//TODO even if the interpolation tag is there, to where to show the house numbers? latlon2 is missing !!!
 						if(e.getTag(OSMTagKey.ADDR_INTERPOLATION) != null) {
 							try {
 								building.setInterpolationType(BuildingInterpolation.valueOf(e.getTag(OSMTagKey.ADDR_INTERPOLATION).toUpperCase()));
@@ -757,6 +812,8 @@ public class IndexAddressCreator extends AbstractIndexPartCreator{
 					}
 					
 					streetDAO.writeBuilding(idsOfStreet, building);
+				} else {
+					log.houseEvent(e, " could not find/register apropriate street for this entity (addr:housenumber&street)");
 				}
 			}
 		} else if (e instanceof Way /* && OSMSettings.wayForCar(e.getTag(OSMTagKey.HIGHWAY)) */
@@ -779,6 +836,8 @@ public class IndexAddressCreator extends AbstractIndexPartCreator{
 			}
 		}
 		if (e instanceof Relation) {
+			//http://wiki.openstreetmap.org/wiki/Key:postal_code
+			//TODO: You can tag nodes, ways, and areas with (from wiki), but we use only Relation????
 			if (e.getTag(OSMTagKey.POSTAL_CODE) != null) {
 				ctx.loadEntityRelation((Relation) e);
 				postalCodeRelations.add((Relation) e);
@@ -835,6 +894,7 @@ public class IndexAddressCreator extends AbstractIndexPartCreator{
 
 	public void writeBinaryAddressIndex(BinaryMapIndexWriter writer, String regionName, IProgress progress) throws IOException, SQLException {
 		streetDAO.close();
+		log.close();
 		closePreparedStatements(addressCityStat);
 		mapConnection.commit();
 
@@ -962,6 +1022,7 @@ public class IndexAddressCreator extends AbstractIndexPartCreator{
 			}
 			Map<Street, List<Node>> streetNodes = new LinkedHashMap<Street, List<Node>>();
 			List<City> listSuburbs = null;
+			//TODO we could use the boundaries information to get the suburbs!!!
 			if (suburbs != null) {
 				for (City suburb : suburbs) {
 					if (suburb.getIsInValue().contains(city.getName().toLowerCase())) {
@@ -974,7 +1035,7 @@ public class IndexAddressCreator extends AbstractIndexPartCreator{
 			}
 			long time = System.currentTimeMillis();
 			List<Street> streets = readStreetsBuildings(streetstat, city, waynodesStat, streetNodes, listSuburbs);
-			long f = System.currentTimeMillis() - time;
+			long readStreetsTime = System.currentTimeMillis() - time;
 			writer.writeCityIndex(city, streets, streetNodes, ref);
 			int bCount = 0;
 			// register postcodes and name index
@@ -1008,11 +1069,11 @@ public class IndexAddressCreator extends AbstractIndexPartCreator{
 					}
 				}
 			}
-			if (f > 500) {
+			if (readStreetsTime > 500) {
 				if (logMapDataWarn != null) {
-					logMapDataWarn.info("! " + city.getName() + " ! " + f + " ms " + streets.size() + " streets " + bCount + " buildings");
+					logMapDataWarn.info("! " + city.getName() + " ! " + readStreetsTime + " ms " + streets.size() + " streets " + bCount + " buildings");
 				} else {
-					log.info("! " + city.getName() + " ! " + f + " ms " + streets.size() + " streets " + bCount + " buildings");
+					log.cityEvent(city, "! " + city.getName() + " ! " + readStreetsTime + " ms " + streets.size() + " streets " + bCount + " buildings");
 				}
 			}
 		}
@@ -1027,6 +1088,7 @@ public class IndexAddressCreator extends AbstractIndexPartCreator{
 	public void createDatabaseStructure(Connection mapConnection, DBDialect dialect) throws SQLException {
 		this.mapConnection = mapConnection;
 		streetDAO.createDatabaseStructure(mapConnection, dialect);
+		log.createDatabaseStructure(mapConnection, dialect);
 		createAddressIndexStructure(mapConnection, dialect);
 		addressCityStat = mapConnection.prepareStatement("insert into city (id, latitude, longitude, name, name_en, city_type) values (?, ?, ?, ?, ?, ?)");
 
@@ -1207,5 +1269,10 @@ public class IndexAddressCreator extends AbstractIndexPartCreator{
 			Collections.sort(t, comparator);
 		}
 		return cities;
+	}
+
+
+	public void writeAddressLog(String addressLogFileName) {
+		log.writeAddressLog(addressLogFileName);
 	}
 }
