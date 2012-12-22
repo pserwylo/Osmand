@@ -1064,14 +1064,61 @@
     <string name="rendering_attr_noAdminboundaries_name">Toon geen grenzen</string>
 	<string name="rendering_attr_noAdminboundaries_description">Geen weergave van regio- en provinciegrenzen (grensniveaus 5-9)</string>
 	<string name="osmodroid_plugin_old_ver_not_supported">De OsMoDroid plugin is een oude versie en moet ge-update worden.</string>
-    <string name="osmodroid_plugin_description">De OsMoDroid plugin (wat-te-doen beschrijving)</string>
+    <string name="osmodroid_plugin_description">OsMoDroid plugin is een OsmAnd extensie voor de OsModroid applicatie voor live tracking functies. Informatie over de service is beschikbaar op http://esya.ru.</string>
     <string name="osmodroid_plugin_name">OsMoDroid plugin</string>
 	<string name="index_srtm_parts">gedeelten</string>
     <string name="index_srtm_ele">hoogtelijnen</string>
-    <string name="srtm_plugin_description">Met de plugin kan je hoogtelijnen en reliëf op de kaart weergeven</string>
+    <string name="srtm_plugin_description">Met de plugin kan je hoogtelijnen en reliëf op de kaart weergeven.</string>
     <string name="srtm_plugin_name">SRTM plugin</string>
     <string name="download_select_map_types">Andere kaarten</string>
     <string name="download_srtm_maps">SRTM kaarten</string>
     <string name="osmand_distance_plugin_description">Meet de afstand tussen twee punten. Specificeer het uitgangspunt / de bestemming / wis de meting door een lange druk.</string>
 	<string name="osmand_distance_plugin_name">Afstandsmeter</string>
-</resources>
+<string name="audionotes_plugin_description">Audionotities maken tijdens de reis</string>
+    <string name="audionotes_plugin_name">Audionotities plugin</string>
+    <string name="osmand_srtm_short_description_80_chars">OsmAnd plugin voor offline contourlijnen</string>
+    <string name="osmand_srtm_long_description_1000_chars">Deze plugin biedt contourlijnen die kunnen worden weergegeven in OsmAnd\'s offline kaarten. De globale gegevens (tussen 70 graden noorderbreedte en 70 graden zuiderbreedte) zijn gebaseerd op metingen door SRTM (Shuttle Radar Topography Mission) en ASTER (Advanced Spaceborne Thermal Emission and Reflection Radiometer), een beeldvormende instrument aan boord van Terra, het vlaggenschip satelliet van NASA\'s Earth Observing System. ASTER is een samenwerkingsverband tussen NASA, het Japanse Ministerie van Economie, Handel en Industrie (METI), en Japan Space Systems (J-spacesystems).</string>
+    <string name="use_clear_distance_measurement">Klik nog een keer om meetpunten te wissen.</string>
+    <string name="use_distance_measurement">Druk om een ​​punt te maken, druk en houdt vast om het vorige punt te wissen, klikt op het meting-widget om af te sluiten.</string>
+    <string name="map_widget_distancemeasurement">Afstandmeting</string>
+    <string name="audionotes_location_not_defined">Locatie is nog niet gedefinieerd om audio notities te nemen</string>
+    <string name="map_widget_audionotes">Audio notities</string>
+    <string name="srtm_plugin_attribution">ASTER is een product van METI en NASA</string>
+    <string name="monitoring_control_stop">stoppen</string>
+    <string name="recording_is_recorded">Audio/video wordt opgenomen. Om te stoppen, druk op de stop knop van de widget.</string>
+    <string name="recording_playing">Een geluidsfragment van de gekozen opname wordt afgespeeld.\n%1$s</string>
+    <string name="recording_open_external_player">Open externe player</string>
+    <string name="recording_delete_confirm">Wil je deze opname verwijderen?</string>
+    <string name="tip_recent_changes_1_1_0_t">"Wijzigingen in 1.1.0 :
+\n\t* Afstandsmeter plugin
+\n\t* Audio notities plugin
+\n\t* Hoogtelijnen plugin
+\n\t* Bugs opgelost
+\n\t* \'Touring view\' kaartstijl optie met meer kaartdetails, nieuwe wegenstijles, meer contrast en Alpine wandelen optie(SAC schaal)\n\n\t* EGM96 geoïde hoogtecorrectie voor GPS hoogte-uitlezingen "</string>
+    <string name="recording_unavailable">niet beschikbaar</string>
+    <string name="recording_context_menu_arecord">Maak een audio-notitie</string>
+    <string name="recording_context_menu_vrecord">Maak een video-notitie</string>
+    <string name="layer_recordings">Opnamelaag</string>
+    <string name="recording_can_not_be_played">Opname kan niet worden afgespeeld</string>
+    <string name="recording_context_menu_delete">Wis opname</string>
+    <string name="recording_context_menu_play">Afspelen</string>
+    <string name="recording_description">Opname %1$s %2$s op %3$s</string>
+    <string name="recording_default_name">opname</string>
+    <string name="av_control_stop">stop</string>
+    <string name="av_control_start">opnemen</string>
+    <string name="map_widget_av_notes">Audio-notities</string>
+    <string name="av_def_action_video">Video opnemen</string>
+    <string name="av_def_action_audio">Audio opnemen</string>
+    <string name="av_widget_action_descr">Selecteer standaard widget-actie</string>
+    <string name="av_widget_action">Standaard widget-actie</string>
+    <string name="av_video_format_descr">Selecteer video bestandsformaat</string>
+    <string name="av_video_format">Video bestandsformaat</string>
+    <string name="av_use_external_recorder_descr">Gebruik de systeem recorder voor video</string>
+    <string name="av_use_external_recorder">Gebruik een externe recorder</string>
+    <string name="av_settings_descr">Configureer audio- en video-instellingen</string>
+    <string name="av_settings">"Audio/video instellingen "</string>
+    <string name="recording_error">"Fout opgetreden bij opnemen "</string>
+    <string name="recording_camera_not_available">Camera is niet beschikbaar</string>
+    <string name="srtm_paid_version_msg">Overweeg alsjeblieft om de \"Contour lines\" plugin te kopen bij Google Play om de verdere ontwikkeling te ondersteunen.</string>
+    <string name="srtm_paid_version_title">Hoogtelijnen / contourlijnen plugin</string>
+    </resources>

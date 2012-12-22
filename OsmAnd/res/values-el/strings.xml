@@ -1104,13 +1104,55 @@
 	<string name="tip_altitude_offset">Ένδειξη Υψομέτρου - Διόρθωση Λάθους</string>
 	<string name="osmodroid_plugin_name">Πρόσθετο OsMoDroid</string>
 	<string name="osmodroid_plugin_old_ver_not_supported">Το πρόσθετο OsMoDroid είναι μια παλιά έκδοση και πρέπει να ενημερωθεί.</string>
-    <string name="osmodroid_plugin_description">Πρόσθετο OsMoDroid</string>
+    <string name="osmodroid_plugin_description">Το πρόσθετο OsMoDroid είναι μια επέκταση του OsmAnd για την εφαρμογή OsModroid για δυνατότητα ιχνηλάτησης πραγματικού χρόνου. Πληροφορίες σχετικά με την υπηρεσία είναι διαθέσιμες στο http://esya.ru.</string>
     <string name="download_select_map_types">Άλλοι χάρτες</string>
     <string name="index_srtm_ele">Ισοϋψείς γραμμές</string>
-    <string name="srtm_plugin_description">Πρόσθετο SRTM</string>
-    <string name="srtm_plugin_name">Πρόσθετο SRTM</string>
-    <string name="download_srtm_maps">Χάρτες SRTM</string>
-    <string name="osmand_distance_plugin_description">Μέτρηση απόστασης μεταξύ δύο σημείων. Καθορίστε την αφετηρία / τον προορισμό / καθαρισμός της μέτρησης μέσω παρατεταμένου πατήματος.</string>
+    <string name="srtm_plugin_description">Αυτό το πρόσθετο σας επιτρέπει να κάνετε λήψη υψομετρικών γραμμών (Λήψη χαρτών -&gt; Μενού -&gt; Άλλοι χάρτες) για συγκεκριμένη περιοχή και να τους χρησιμοποιήσετε με τους offline χάρτες.</string>
+    <string name="srtm_plugin_name">Πρόσθετο ισοϋψών γραμμών</string>
+    <string name="download_srtm_maps">Δεδομένα ισοϋψών γραμμών</string>
+    <string name="osmand_distance_plugin_description">Μέτρηση απόστασης μεταξύ δύο ή περισσότερων σημείων. Προσθήκη σημείων με γρήγορο κλικ και αφαίρεση μέσω παρατεταμένου πατήματος.</string>
 	<string name="osmand_distance_plugin_name">Υπολογιστής Απόστασης</string>
 <string name="index_srtm_parts">μέρη</string>
+    <string name="monitoring_control_stop">Σταμάτημα</string>
+    <string name="map_widget_audionotes">Ηχητικές σημειώσεις</string>
+    <string name="audionotes_plugin_description">Εγγραφή ηχητικών σημειώσεων</string>
+    <string name="audionotes_plugin_name">Πρόσθετο ηχητικών σημειώσεων</string>
+    <string name="srtm_plugin_attribution">το ASTER είναι ένα προϊόν των METI και NASA</string>
+    <string name="osmand_srtm_short_description_80_chars">πρόσθετο του OsmAnd για ισοϋψείς γραμμές χωρίς σύνδεση</string>
+    <string name="use_clear_distance_measurement">Κλικ άλλη μια φορά για καθαρισμό των σημείων μέτρησης.</string>
+    <string name="map_widget_distancemeasurement">Μέτρηση απόστασης</string>
+    <string name="recording_is_recorded">Εγγραφή Ήχου/Εικόνας σε εξέλιξη. Για σταμάτημα πατήστε στο κουμπί stop στο γραφικό στοιχείο.</string>
+    <string name="recording_playing">Ένας ήχος από την συγκεκριμένη εγγραφή αναπαράγεται.\n%1$s</string>
+    <string name="recording_open_external_player">Άνοιγμα εξωτερικού αναπαραγωγέα</string>
+    <string name="recording_delete_confirm">Θέλετε να αφαιρέσετε αυτή την εγγραφή;</string>
+    <string name="tip_recent_changes_1_1_0_t">"Changes in 1.1.0 :
+\n\t* Πρόσθετο υπολογιστή απόστασης
+\n\t* Πρόσθετο ηχητικών σημειώσεων
+\n\t* Πρόσθετο ισοϋψών γραμμών
+\n\t* Διορθώσεις σφαλμάτων
+\n\t* \'Touring view\' map style option with more map details, new road styles, more contrast, and Alpine hiking (SAC scale) option
+\n\t* EGM96 geoid offset correction for GPS altitude readings "</string>
+    <string name="recording_unavailable">μη διαθέσιμο</string>
+    <string name="recording_context_menu_arecord">Κάντε ηχητική σημείωση</string>
+    <string name="recording_context_menu_vrecord">Κάντε σημείωση video</string>
+    <string name="recording_can_not_be_played">Η εγγραφή δεν μπορεί να αναπαραχθεί</string>
+    <string name="recording_context_menu_delete">Διαγραφή εγγραφής</string>
+    <string name="recording_context_menu_play">Αναπαραγωγή</string>
+    <string name="recording_description">Εγγραφή %1$s %2$s at %3$s</string>
+    <string name="recording_default_name">εγγραφή</string>
+    <string name="map_widget_av_notes">Ηχητικές σημειώσεις</string>
+    <string name="av_def_action_video">Εγγραφή εικόνας</string>
+    <string name="av_def_action_audio">Εγγραφή ήχου</string>
+    <string name="av_widget_action_descr">Επιλέξτε προκαθορισμένη ενέργεια γραφικού στοιχείου</string>
+    <string name="av_widget_action">Προκαθορισμένη ενέργεια γραφικού στοιχείου</string>
+    <string name="av_use_external_recorder">Χρήση εξωτερικού εγγραφέα</string>
+    <string name="av_settings">"Ρυθμίσεις εικόνας/ήχου "</string>
+    <string name="recording_error">"Προέκυψε σφάλμα κατά την εγγραφή "</string>
+    <string name="recording_camera_not_available">Κάμερα μη διαθέσιμη</string>
+    <string name="av_control_stop">σταμάτημα</string>
+    <string name="av_video_format_descr">Επιλέξτε μορφή εξόδου εικόνας</string>
+    <string name="av_video_format">Μορφή εξόδου εικόνας</string>
+    <string name="av_use_external_recorder_descr">Χρήση τού εγγραφέα συστήματος για την εικόνα</string>
+    <string name="use_distance_measurement">Αγγίξτε για δημιουργία σημείου, πιέστε και κρατήστε για διαγραφή προηγούμενου σημείου, κλικ στο γραφικό στοιχείο μέτρησης για έξοδο.</string>
+    <string name="av_settings_descr">Διαμόρφωση ρυθμίσεων ήχου και εικόνας</string>
     </resources>

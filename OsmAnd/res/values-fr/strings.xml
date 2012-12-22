@@ -167,8 +167,8 @@
   <string name="select_search_position">Recherche autour de :</string>
   <string name="context_menu_item_search">Rechercher autour du point</string>
   <string name="tip_recent_changes_0_6_7_t">Changement pour 0.6.7 :
-\n\t- Gestionaire de données hors ligne (téléchargement, suppression, sauvegarde des données hors ligne directement dans OsmAnd)
-\n\t- Favoris et groupes (categorisation, suppression, gestion)
+\n\t- Gestionnaire de données hors ligne (téléchargement, suppression, sauvegarde des données hors ligne directement dans OsmAnd)
+\n\t- Favoris et groupes (catégorisation, suppression, gestion)
 \n\t- Explorateur GPX dans l\'application (voir les itinéraires, distance, vitesse moyenne, altitude, etc.)
 \n\t- Navigation GPX (options utiles, continuer un itinéraire après plantage, identification des rond-points)
 \n\t- Fonction d\'enregistrement des itinéraires au format GPX pour utilisation ultérieure hors ligne
@@ -240,7 +240,7 @@
 \n\t- Moteur de synthèse vocale pour le guidage vocal
 \n\t- Ajout de détail dans le rendu de la carte
 \n\t- Carte mondiale de base incluse dans l\'application
-\n\t- Amélioration du calcul d\'itinéraire hors-ligne (toujours experimental)
+\n\t- Amélioration du calcul d\'itinéraire hors-ligne (toujours expérimental)
 \n\t- Options d\'itinéraire GPX
 \n\t- Améliorations de l\'interface et correction de défauts</string>
   <string name="voice_not_use">Non utilisé</string>
@@ -257,7 +257,7 @@
   <string name="switch_to_vector_map_to_see">Vous pouvez basculer sur les cartes vectorielles locales en utilisant le menu (Couches -&gt; Source de la carte… -&gt; Cartes vectorielles OSM) pour voir la carte.</string>
   <string name="choose_audio_stream">Sélectionner le flux audio</string>
   <string name="choose_audio_stream_descr">Sélectionner le canal pour le guidage vocal (dépend de la configuration système)</string>
-  <string name="voice_stream_voice_call">Canal appel vocal</string>
+  <string name="voice_stream_voice_call">Canal d\'appels vocaux</string>
   <string name="voice_stream_notification">Canal de notification</string>
   <string name="voice_stream_music">Canal musique</string>
   <string name="warning_tile_layer_not_downloadable">L\'application ne peut télécharger la couche de carte %1$s, veuillez tenter de la réinstaller.</string>
@@ -1126,7 +1126,7 @@ OsmAnd est activement développé et notre projet et ses progrès futurs dépend
     <string name="safe_mode_description">Exécuter l\'application dans le mode sûr (ne pas utiliser de code natif).</string>
     <string name="safe_mode">Mode sûr</string>
     <string name="native_library_not_running">L\'application s\'exécute en mode sûr (désactiver le dans les paramètres).</string>
-    <string name="rendering_attr_showRoadMaps_description">Sélectionner quand afficher les cartes uniquement routières :</string>
+    <string name="rendering_attr_showRoadMaps_description">Sélectionner pour afficher uniquement les cartes routières :</string>
 	<string name="rendering_attr_showRoadMaps_name">Cartes routières uniquement</string>
     <string name="download_roads_only_item">"Routes uniquement "</string>
     <string name="download_regular_maps">Cartes standards</string>
@@ -1141,20 +1141,66 @@ OsmAnd est activement développé et notre projet et ses progrès futurs dépend
     <string name="map_widget_max_speed">Limite de vitesse</string>
     <string name="tip_altitude_offset">Affichage de l\'altitude - Écart de correction</string>
 	<string name="monitoring_control_start">Démarrage</string>
-    <string name="rendering_attr_noAdminboundaries_name">Cacher les limites</string>
+    <string name="rendering_attr_noAdminboundaries_name">Cacher les limites administratives</string>
 	<string name="rendering_attr_noAdminboundaries_description">Ne pas afficher les limites administratives régionales (niveaux 5 à 9)</string>
 	<string name="tip_altitude_offset_t">"\tLa plupart des périphériques GPS donnent des mesures d\'altitude dans le référentiel ellipsoïdal WGS84, depuis lequel une conversion vers le système local nécessite une correction fonction de la position courante.
 \n\tUne meilleure approximation des systèmes locaux est le référentiel EGM96. OsmAnd supporte désormais l\'affichage de l\'altitude dans ce référentiel.
 \n\tIl suffit pour cela de télécharger le fichier WW15MGH.DAC depuis le gestionnaire de données hors-ligne (l\'original est à l\'adresse http://earth-info.nga.mil/GandG/wgs84/gravitymod/egm96/binary/WW15MGH.DAC). "</string>
     <string name="osmodroid_plugin_old_ver_not_supported">Le greffon OsMoDroid est obsolète et doit être mis à jour.</string>
-    <string name="osmodroid_plugin_description">Greffon OsMoDroid (description à faire)</string>
+    <string name="osmodroid_plugin_description">Le greffon OsMoDroid est une extension OsmAnd pour l\'application OsMoDroid qui permet la création de trace. Pour plus d\'information à propos du service, consulter le site http://esya.ru.</string>
     <string name="osmodroid_plugin_name">Greffon OsMoDroid</string>
 	<string name="index_srtm_ele">Courbes de niveau</string>
-    <string name="srtm_plugin_description">Greffon SRTM (description à faire)</string>
+    <string name="srtm_plugin_description">Ce greffon permet de télécharger les courbes de niveaux (Téléchargement de cartes -&gt; Menu -&gt; Autres cartes) pour une région spécifique et de les utiliser avec les cartes hors-lignes.</string>
     <string name="srtm_plugin_name">Greffon SRTM</string>
     <string name="download_select_map_types">Autres cartes</string>
     <string name="download_srtm_maps">Cartes SRTM</string>
     <string name="index_srtm_parts">parties</string>
     <string name="osmand_distance_plugin_description">Mesurer une distance entre deux points. Spécifier l\'origine et la destionation. Effacer la mesure par un appui long.</string>
 	<string name="osmand_distance_plugin_name">Calculateur de distances</string>
-</resources>
+<string name="audionotes_location_not_defined">La position courante n\'est pas encore connue pour permettre de prendre les notes audio</string>
+    <string name="monitoring_control_stop">Arrêter</string>
+    <string name="map_widget_audionotes">Notes audio</string>
+    <string name="audionotes_plugin_description">Description du greffon de notes audio</string>
+    <string name="audionotes_plugin_name">Greffon de notes audio</string>
+    <string name="srtm_plugin_attribution">ASTER est un produit du METI et la NASA.</string>
+    <string name="osmand_srtm_short_description_80_chars">Greffon OsmAnd pour les courbes de niveau hors-lignes</string>
+    <string name="osmand_srtm_long_description_1000_chars">Ce greffon fournit des lignes de niveau qui peuvent être affichées sur les cartes hors ligne de OsmAnd. Les données globales (entre 70 degrés nord et 70 degrés sud) sont basées sur des mesures de SRTM (Shuttle Radar Topography Mission) et ASTER (Advanced Spaceborne Thermal Emission and Reflection Radiometer), un instrument d\'imagerie à bord de Terra, le satellite phare du système d\'observation de la terre de la NASA. ASTER est un effort de coopération entre la NASA, le ministère japonais de l\'économie, du commerce et de l\'industrie (METI), et \"Japan Space Systems\" (J-Spacesystems).</string>
+    <string name="use_clear_distance_measurement">Cliquez une nouvelle fois pour effacer les points de mesure.</string>
+    <string name="use_distance_measurement">Appuyez pour créer un point, appuyez et maintenez enfoncé pour supprimer le point précédent, cliquez sur le gadget de mesure pour quitter.</string>
+    <string name="map_widget_distancemeasurement">Mesure de distance</string>
+    <string name="av_def_action_video">Enregistrer une vidéo</string>
+    <string name="av_def_action_audio">Enregistrer une note audio</string>
+    <string name="av_widget_action_descr">Sélectionner l\'action par défaut du gadget</string>
+    <string name="av_widget_action">Action par défaut du gadget</string>
+    <string name="av_video_format_descr">Sélectionner le format vidéo</string>
+    <string name="av_video_format">Format d\'enregistrement vidéo</string>
+    <string name="av_use_external_recorder_descr">Utiliser l\'enregistreur système pour la vidéo</string>
+    <string name="av_use_external_recorder">Utiliser un enregistreur externe</string>
+    <string name="av_settings_descr">Configurer les paramètres audio et vidéo</string>
+    <string name="av_settings">Paramètres audio/vidéo</string>
+    <string name="recording_error">"Une erreur s\'est produite lors de l\'enregistrement "</string>
+    <string name="recording_camera_not_available">Caméra non disponible</string>
+    <string name="recording_is_recorded">Audio/vidéo en cours d\'enregistrement. Pour l\'arrêter, appuyez sur le bouton Arrêter du gadget.</string>
+    <string name="recording_playing">La note audio de l\'enregistrement spécifié est en cours de lecture.\n%1$s</string>
+    <string name="recording_open_external_player">Ouvrir un lecteur externe</string>
+    <string name="recording_delete_confirm">Voulez-vous supprimer cet enregistrement ?</string>
+    <string name="recording_unavailable">non disponible</string>
+    <string name="recording_context_menu_arecord">Prendre une note audio</string>
+    <string name="recording_context_menu_vrecord">Prendre une note vidéo</string>
+    <string name="layer_recordings">Couche d\'enregistrement</string>
+    <string name="recording_can_not_be_played">L\'enregistrement ne peut pas être lu</string>
+    <string name="recording_context_menu_delete">Supprimer l\'enregistrement</string>
+    <string name="recording_context_menu_play">Lire</string>
+    <string name="recording_description">Enregistrement %1$s %2$s à %3$s</string>
+    <string name="recording_default_name">enregistrement</string>
+    <string name="av_control_stop">Arrêter</string>
+    <string name="map_widget_av_notes">Notes audio</string>
+    <string name="tip_recent_changes_1_1_0_t">"Changement pour 1.1.0 :
+\n\t* Greffon de calcul de distance
+\n\t* Greffon de prise de notes audio/vidéo
+\n\t* Greffon pour les courbes de niveau
+\n\t* Corrections d\'erreurs
+\n\t* Option \'Touring view\' avec plus de détails\n\t* Nouveaux styles de routes, plus de contrast\n\t* Option pour la randonnée (classification SAC)
+\n\t* Correction pour le référentiel EGM96 lors de la lecture de l\'altitude avec le GPS "</string>
+    <string name="av_control_start">Enreg.</string>
+    </resources>

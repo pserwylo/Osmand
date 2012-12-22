@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version='1.0' encoding='utf-8'?>
 <resources><string name="use_fluorescent_overlays">Sovrapposizioni fluorescenti</string>
   <string name="use_fluorescent_overlays_descr">Usa colori fluorescenti per mostrare tracce e percorsi</string>
   <string name="offline_edition">Modifiche offline</string>
@@ -246,20 +246,20 @@
   <string name="layer_underlay">Mappa di sfondo…</string>
   <string name="map_underlay">Mappa di sfondo</string>
   <string name="map_underlay_descr">Scegli mappa di sfondo</string>
-  <string name="layer_overlay">Mappa di overlay…</string>
+  <string name="layer_overlay">Mappa sovrapposta…</string>
   <string name="default_none">Nessuna</string>
-  <string name="map_overlay">Mappa di overlay</string>
-  <string name="map_overlay_descr">Scegli mappa di overlay</string>
+  <string name="map_overlay">Mappa sovrapposta</string>
+  <string name="map_overlay_descr">Scegli mappa di sovrapposizione</string>
   <string name="tile_source_already_installed">La mappa è già installata, verrà aggiornata</string>
-  <string name="select_tile_source_to_install">Seleziona le mappe (tile) da installare o aggiornare</string>
+  <string name="select_tile_source_to_install">Seleziona le mappe (mattonella) da installare o aggiornare</string>
   <string name="internet_not_available">Connessione internet richiesta ma non disponibile</string>
   <string name="install_more">Installa altro…</string>
   <string name="tip_update_index">Aggiornamento Dati Offline</string>
-  <string name="tip_update_index_t">\tAvere dati aggiornati è importante. OsmAnd fornisce un download manager che controlla gli aggiornamenti disponibili.
+  <string name="tip_update_index_t">\tAvere dati aggiornati è essenziale. OsmAnd fornisce un download manager che può controllare la disponibilità di aggiornamenti offline.
 \n\tPer controllare gli aggiornamenti andare su \'Impostazioni\' -&gt; \'Dati offline\' -&gt; \'Download dati offline\'. Dopo il download della lista delle regioni ti basterà selezionare \'Menu\' -&gt; \'Filtra scaricati\' per indicare aggiornamenti di file già in tuo possesso.
 \n\tLa disponibilità degli aggiornamenti viene indicata dai colori seguenti:
-\n\t\'Verde\' - file aggiornato
-\n\t\'Blu\' - aggiornamento disponibile</string>
+\n\t\'Verde\' - indica file identici su server e dispositivo
+\n\t\'Blu\' - indica aggiornamenti disponibile sul server\n\t\'Verde scuro/blu\' - analogamente indica dati disattivati sul dispositivo</string>
   <string name="level_to_switch_vector_raster_descr">Minimo livello di zoom per usare il rendering vettoriale al posto dei tile mappa</string>
   <string name="level_to_switch_vector_raster">Min. livello zoom</string>
   <string name="tip_location_sharing">Condivisione Posizione</string>
@@ -622,7 +622,7 @@
   <string name="data_settings">Dati</string>
   <string name="map_preferences_descr">Specificare impostazioni mappa: fonte, rotazione, posizione marker, orientazione schermo</string>
   <string name="osm_settings">Contribuire a OSM</string>
-  <string name="auto_zoom_map_descr">Zoom automatico relativo alla velocità</string>
+  <string name="auto_zoom_map_descr">Zoom mappa automatico relativo alla velocità (fintanto che la mappa è sincronizzata con la posizione corrente)</string>
   <string name="auto_zoom_map">Zoom automatico mappa</string>
   <string name="additional_settings">Impostazioni aggiuntive</string>
   <string name="settings">Impostazioni</string>
@@ -748,15 +748,15 @@
   <string name="poi_action_add">Aggiungi</string>
   <string name="poi_action_change">Cambia</string>
   <string name="poi_action_succeded_template">Azione {0} completata.</string>
-  <string name="poi_error_unexpected_template">Errore inatteso durante l\'azione {0}.</string>
-  <string name="poi_error_io_error_template">Errore di input/output durante l\'azione {0}.</string>
+  <string name="poi_error_unexpected_template">Errore inatteso durante l\'esecuzione dell\'azione {0}.</string>
+  <string name="poi_error_io_error_template">Errore di input/output durante l\'esecuzione dell\'azione {0}.</string>
   <string name="poi_error_info_not_loaded">Informazioni relative all\'oggetto non caricate</string>
   <string name="poi_dialog_name">Nome</string>
   <string name="poi_dialog_opening_hours">Apertura</string>
   <string name="poi_dialog_comment">Commento</string>
   <string name="poi_dialog_comment_default">Cambio PDI</string>
   <string name="poi_dialog_other_tags_message">Tutti gli altri tag sono conservati</string>
-  <string name="default_buttons_commit">Aggiornamento</string>
+  <string name="default_buttons_commit">Esegui</string>
   <string name="default_buttons_reset">Resetta</string>
   <string name="filter_current_poiButton">Filtro</string>
   <string name="edit_filter_delete_menu_item">Elimina</string>
@@ -876,7 +876,7 @@
   <string name="scroll_map_by_gestures_descr">Muovi la mappa con gestures sul touchscreen</string>
   <string name="scroll_map_by_gestures">Scorrimento naturale della mappa</string>
   <string name="i_am_here">Io sono qui</string>
-  <string name="zoom_by_trackball_descr">Cambia lo zoom con movimenti orizzontali della trackball</string>
+  <string name="zoom_by_trackball_descr">Cambia lo zoom della mappa con movimenti orizzontali della trackball</string>
   <string name="zoom_by_trackball">Usa la trackball per il controllo dello zoom</string>
   <string name="use_short_object_names_descr">Usa i nomi corti degli oggetti in modalità esplorazione col tocco</string>
   <string name="use_short_object_names">Usa i nomi degli oggetti</string>
@@ -1023,13 +1023,13 @@
 <string name="avoid_in_routing_title">﻿Evitare…</string>
 <string name="avoid_in_routing_descr">Evitare strade a pagamento, sterrate, traghetti</string>
 <string name="show_warnings_title">Mostra avvertimenti…</string>
-<string name="show_warnings_descr">Mostra limiti di velocità, autovelox, dossi rallentatori e altri avvertimenti</string>
+<string name="show_warnings_descr">Configura gli avvertimenti (limiti di velocità, stop forzati, dossi rallentatori) avvisi autovelox, e informazioni di corsia</string>
 <string name="map_widget_fluorescent">Itinerari fluorescenti</string>
 <string name="map_widget_show_ruler">Scala grafica</string>
 <string name="map_widget_appearance">Varie:</string>
-<string name="map_widget_view_direction">﻿Direzione di orientamento</string>
+<string name="map_widget_view_direction">﻿Direzione della visuale</string>
 <string name="map_widget_transparent">Aspetto trasparente</string>
-<string name="monitoring_mode_off">Salva GPX</string>
+<string name="monitoring_mode_off">Registra GPX</string>
 <string name="monitoring_mode_on">Ferma\n reg. GPX</string>
 <string name="gps_wakeup_interval">﻿Intervallo di risveglio GPS: %s</string>
 <string name="int_continuosly">Continuo</string>
@@ -1051,9 +1051,8 @@
 \n\tSotto \'Sorgente mappa…\'tu puoi scegliere di usare le mappe vettoriali offline precaricate, predefinito (online) sorgenti di tasselli (attiva il \'Mappe online\' plugin per questo), o mappe create manualmente usando per esempio OsmAndMapCreator sul PC.
 \n\tOsmAnd supporta anche sorgenti su misura.
 </string>
-<string name="tip_app_mode_t_v2">\tOsmAnd supporta differenti (e personalizzabili) profili dell\'applicazione per differenti tipi di utilizzo.
-\n\tPuoi cambiare profilo attraverso il pulsante profilo nell\'angolo inferiore sinistro dello schermata della mappa (icona automobile, bicicletta, o pedone), oppure quando creai un itinerario.
-</string>
+<string name="tip_app_mode_t_v2">"\tOsmAnd supporta differenti (e personalizzabili) profili dell\'applicazione per differenti tipi di utilizzo.
+\n\tPuoi cambiare profilo attraverso il pulsante profilo nell\'angolo inferiore sinistro dello schermata della mappa (icona automobile, bicicletta, o pedone), oppure quando crei un itinerario. "</string>
 <string name="osmand_short_description_80_chars">OsmAnd è un\'applicazione a sorgente aperto di navigazione per mappe offline e online</string>
 <string name="osmand_long_description_1000_chars">"  OsmAnd (OSM Automatizzata Navigazione Direzioni)\n\n\n\tOsmAnd è una applicazione di navigazione, a sorgente aperto, con accesso a una grande varietà di dati mondiali di OpenStreetMap (OSM). Tutte le mappe (vettoriali o a tasselli) posso essere memorizzate nella scheda di memoria del telefono per essere utilizzate offline. OsmAnd offre anche la funzionalità del calcolo dell\'itinerario online che offline compreso la voce guida curva per curva.
 \n\n\n\tAlcune delle caratteristiche principali:
@@ -1098,7 +1097,7 @@
 <string name="avoid_motorway">Evita le autostrade</string>
 <string name="intermediate_point_too_far">Punto intermedio %1$s è troppo lontano dalla strada più vicina.</string>
 <string name="arrived_at_intermediate_point">Sei arrivato al punto intermedio</string>
-<string name="context_menu_item_intermediate_point">Aggiungi punto intermedio</string>
+<string name="context_menu_item_intermediate_point">Aggiungi come punto intermedio</string>
 <string name="map_widget_intermediate_distance">Punto intermedio</string>
 <string name="ending_point_too_far">Punto finale troppo distante dalla strada più vicina.</string>
 <string name="btn_add_tag">Aggiungi etichetta</string>
@@ -1111,15 +1110,15 @@
 <string name="poi_filter_restaurants">Ristoranti</string>
 <string name="poi_filter_sightseeing">Attrazione turistica</string>
 <string name="tip_recent_changes_0_8_4_t">"Cambiamenti nella 0.8.4:
-\n\t* aggiornamento "</string>
-    <string name="context_menu_item_last_intermediate_point">Imposta il punto dell\'ultima destinazione</string>
-    <string name="context_menu_item_first_intermediate_point">Imposta il primo punto da raggiungere</string>
+\n\t*Alcuni correzioni di errori\n\t*La mappa no perde la posizione dopo le interruzioni\n\t*Abilita il servizio in background durante la navigazione "</string>
+    <string name="context_menu_item_last_intermediate_point">Aggiungi come ultimo punto intermedio</string>
+    <string name="context_menu_item_first_intermediate_point">Aggiungi come primo punto intermedio</string>
     <string name="add_as_last_destination_point">Aggiungi come ultimo punto intermedio</string>
     <string name="add_as_first_destination_point">Aggiungi come primo punto intermedio</string>
     <string name="replace_destination_point">Sostituisci la destinazione</string>
     <string name="new_destination_point_dialog">C\'è già una destinazione impostata.</string>
-    <string name="target_point">Punto di arrivo %1$s</string>
-    <string name="target_points">Destinazioni</string>
+    <string name="target_point">Punto intermedio %1$s</string>
+    <string name="target_points">Punti intermedi</string>
     <string name="map_widget_monitoring_services">Servizi di monitoraggio</string>
 	<string name="no_route">Nessun percorso</string>
 	<string name="delete_target_point">Rimuovi destinazione</string>
@@ -1131,12 +1130,12 @@
     <string name="rendering_attr_roadColors_description">Seleziona una combinazione di colori per le strade:</string>
 	<string name="rendering_attr_roadColors_name">Schema di colori per le strade</string>
     <string name="zxing_barcode_scanner_not_found">L\'applicazione ZXing Barcode Scanner non è installata. Cercarla sul Market?</string>
-	<string name="close_changeset">Chiudi changeset</string>
+	<string name="close_changeset">Chiudi le modifiche</string>
 	<string name="safe_mode_description">Avvia l\'applicazione in modalità sicura (usando il codice Android invece del nativo).</string>
     <string name="safe_mode">Modalità sicura</string>
     <string name="native_library_not_running">L\'applicazione è in esecuzione in modalità sicura (disabilitare nelle Impostazioni).</string>
     <string name="background_service_is_enabled_question">Il servizio in background è ancora in esecuzione. Si desidera fermarlo?</string>
-    <string name="tip_recent_changes_1_0_0_t">"Cambiamenti nella versione 1.0:\n\t*Migliorata la naviazione più veloce e precisa (fino a 250 km)\n\t*Mappa delle strade\n\t*La mappa non perde la posizione dopo le interruzzioni\n\t*Abilita il servizio in background durante la navigazione "</string>
+    <string name="tip_recent_changes_1_0_0_t">"Cambiamenti nella versione 1.0.0:\n\t*Migliorata la navigazione: più veloce e precisa (fino a 250 km)\n\t*Aggiunta le mappe solo-strade\n\t*La mappa non perde la posizione dopo le interruzioni\n\t*Abilita il servizio in background durante la navigazione\n\t*Migliorata \'vista touring\' con i nuovi stili delle strade, mappe più dettagliate, e l\'opzione Alpine hiking (SAC scale)\n\t*EGM96 correzione dello scostamento per le letture dell\'altitudine del GPS "</string>
     <string name="route_descr_lat_lon">Lat %1$.3f lon %2$.3f</string>
     <string name="route_descr_current_location">Posizione corrente</string>
     <string name="route_descr_from_to">Da %1$s a %2$s</string>
@@ -1149,20 +1148,64 @@
     <string name="download_regular_maps">Mappe normali</string>
     <string name="download_roads_only_maps">Mappe solo-strade</string>
     <string name="incomplete_locale">incompleto</string>
-	<string name="map_widget_max_speed">Velocità consentita</string>
-    <string name="tip_altitude_offset_t">"\tLa maggior parte dei GPS riportano la misura dell\\\'altitudine nel sistema di riferimento WGS84 basato su ellissoide, da cui una conversione nel sistema di riferimento richiede una correzione dipendente-dalla-poszione.\n\tUna migliore approssimazione a questi sistemi di riferimento locali è il EGM96. OsmAnd ora supporta la visualizzazione automatica dell\\\'altritudine inel sistema EGM96.
+	<string name="map_widget_max_speed">Limite di velocità</string>
+    <string name="tip_altitude_offset_t">"\tLa maggior parte dei GPS riportano la misura dell\\\'altitudine nel sistema di riferimento WGS84 basato su ellissoide, per cui una conversione nei sistemi di riferimento usati localmente richiede una correzione dipendente dalla posizione.\n\tUna migliore approssimazione a questi sistemi di riferimento locali è il EGM96. OsmAnd ora supporta la visualizzazione automatica dell\\\'altritudine nel sistema EGM96.
 \n\tPer avere questo, scarica semplicemente il file WW15MGH.DAC tramite il Manager di Dati Offline (il file originale si trova all\\\'indirizzo http://earth-info.nga.mil/GandG/wgs84/gravitymod/egm96/binary/WW15MGH.DAC). "</string>
     <string name="tip_altitude_offset">Visualizza Altitudine - Correzione scostamento</string>
 	<string name="monitoring_control_start">avvia</string>
     <string name="rendering_attr_noAdminboundaries_name">Nascondi i confini</string>
 	<string name="rendering_attr_noAdminboundaries_description">Non visualizzare i confini regionali (livelli amministrativi 5-9)</string>
 	<string name="osmodroid_plugin_old_ver_not_supported">OsMoDroid plugin è in versione superata e deve essere aggiornato.</string>
-    <string name="osmodroid_plugin_description">OsMoDroid plugin (descrizione TODO)</string>
+    <string name="osmodroid_plugin_description">Il plugin OsMoDroid è un\'estensione OsmAnd per l\'applicazione OsModroid per le funzioni di monitoraggio in tempo reale. Informazioni sul servizio sono disponibili sul http://esya.ru.</string>
     <string name="osmodroid_plugin_name">OsMoDroid plugin</string>
 	<string name="index_srtm_parts">parti</string>
     <string name="download_select_map_types">Altre mappe</string>
-    <string name="download_srtm_maps">mappe SRTM</string>
-    <string name="srtm_plugin_name">plugin SRTM</string>
-    <string name="srtm_plugin_description">plugin SRTM (descrizione TODO)</string>
-    <string name="index_srtm_ele">Linee di elevazione</string>
+    <string name="download_srtm_maps">Dati linee di livello</string>
+    <string name="srtm_plugin_name">Plugin linee di livello</string>
+    <string name="srtm_plugin_description">Questo plugin facilita lo scarico delle linee di elevazione (Download mappe -&gt; Menu -&gt; Altre mappe) per regioni specifiche e li usa con le mappe offline.</string>
+    <string name="index_srtm_ele">Linee di livello</string>
+    <string name="audionotes_plugin_description">Prende note audio durante il viaggio</string>
+    <string name="audionotes_plugin_name">Plugin Appunti Audio</string>
+    <string name="osmand_distance_plugin_description">Misurare una distanza tra due punti. Specificare l\'origine / la destinazione / cancellare la misurazione con una pressione prolungata.</string>
+	<string name="osmand_distance_plugin_name">Calcolatore della distanza</string>
+<string name="audionotes_location_not_defined">La posizione non è ancora definita per poter prendere note audio</string>
+    <string name="monitoring_control_stop">ferma</string>
+    <string name="osmand_srtm_short_description_80_chars">Plugin Osmand per le curve di livello offline</string>
+    <string name="osmand_srtm_long_description_1000_chars">Questo plugin fornisce le linee di livello che possono essere visualizzate nelle mappe offline di OsmAnd. I dati globali (fra i 70 gradi nord e 70 gradi sud) sono basati su misurazioni del SRTM (Shuttle Radar Topography Mission) e ASTER (Advanced Spaceborne Thermal Emission and Reflection Radiometer), uno strumento misuratore di Terra a bordo, il satellite della NASA del Sistema di Osservazione della Terra. ASTER è uno sforzo di cooperazione tra NASA, il Ministero dell\'Economia del Giappone, Commercio e Industria (METI) e Sistema Spaziale giapponese (J-spacesystems).</string>
+    <string name="use_clear_distance_measurement">Fare clic ancora per cancellare i punti di misurazione.</string>
+    <string name="use_distance_measurement">Toccare per fare un punto, premere e tenere premuto per cancellare un punto precedente, fai clic sul widget di misura per uscire.</string>
+    <string name="map_widget_distancemeasurement">Misura della distanza</string>
+    <string name="map_widget_audionotes">Note audio</string>
+    <string name="srtm_plugin_attribution">ASTER è un prodotto di METI e NASA</string>
+    <string name="av_def_action_video">Registra video</string>
+    <string name="av_def_action_audio">Registra audio</string>
+    <string name="av_widget_action_descr">Selezionare azione di default del widget</string>
+    <string name="av_widget_action">Azione predefinita del widget</string>
+    <string name="av_video_format_descr">Seleziona il formato di uscita video</string>
+    <string name="av_video_format">Formato di uscita video</string>
+    <string name="av_use_external_recorder_descr">Utilizzare sistema di registrazione per il video</string>
+    <string name="av_use_external_recorder">Utilizzare un registratore esterno</string>
+    <string name="av_settings_descr">Configurare le impostazioni audio e video</string>
+    <string name="av_settings">"Impostazioni audio/video "</string>
+    <string name="recording_error">"Errore durante la registrazione "</string>
+    <string name="recording_camera_not_available">La fotocamera non è disponibile</string>
+    <string name="recording_is_recorded">Audio/video sta per essere registrato. Per fermarlo premere il tasto di arresto sul widget.</string>
+    <string name="recording_playing">Un audio sta per essere riprodotto dalla registrazione specificata.\n%1$s</string>
+    <string name="recording_open_external_player">Apri riproduttore esterno</string>
+    <string name="recording_delete_confirm">Vuoi rimuovere questa registrazione?</string>
+    <string name="tip_recent_changes_1_1_0_t">"Variazioni nella versione 1.1.0:\n\t* Plugin di calcolo della distanza\n\t* Plugin per le note audio\n\t* Plugin per le curve di livello\n\t* Correzioni di errori\n\t* Opzione stile mappa \'Vista Touring\' con maggiori dettagli della mappa, stili stradali nuovi, più contrasto e opzione trekking alpino (SAC scala)\n\t* Correzione EGM96 dello scostamento delle letture dell\'altitudine GPS "</string>
+    <string name="recording_unavailable">non disponibile</string>
+    <string name="recording_context_menu_arecord">Prendi una nota audio</string>
+    <string name="recording_context_menu_vrecord">Prendi una nota video</string>
+    <string name="layer_recordings">Registrazione strato</string>
+    <string name="recording_can_not_be_played">La registrazione non può essere riprodotta</string>
+    <string name="recording_context_menu_delete">Cancella la registrazione</string>
+    <string name="recording_context_menu_play">Riproduci</string>
+    <string name="recording_description">Registrazione %1$s %2$s a %3$s</string>
+    <string name="recording_default_name">registrazione</string>
+    <string name="av_control_stop">ferma</string>
+    <string name="av_control_start">registra</string>
+    <string name="map_widget_av_notes">Note audio</string>
+    <string name="srtm_paid_version_msg">Per favore valutate l\'acquisto sul Market del Plugin per le linee di elevazione per sostenere il futuro sviluppo.</string>
+    <string name="srtm_paid_version_title">Plugin linee di livello</string>
     </resources>

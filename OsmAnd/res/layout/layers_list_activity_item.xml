@@ -7,7 +7,7 @@
     android:layout_marginTop="2dip"
     android:layout_marginLeft="5dip"
     android:layout_marginRight="5dip"
-    android:weightSum="1" >
+    android:weightSum="1" android:background="@color/color_white">
 
     <TextView
         android:id="@+id/title"

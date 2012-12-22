@@ -1106,17 +1106,64 @@
     <string name="rendering_attr_noAdminboundaries_name">הסתרת הגבולות</string>
 	<string name="rendering_attr_noAdminboundaries_description">הסתרת דרגות ניהול 5-9</string>
 	<string name="osmodroid_plugin_old_ver_not_supported">גרסת תוסף ה־OsMoDroid ישנה ויש לעדכן אותה.</string>
-    <string name="osmodroid_plugin_description">תוסף OsMoDroid</string>
+    <string name="osmodroid_plugin_description">התוסף OsMoDroid הוא תוסף OsModroid עבור OsmAnd לתכונות מעקב פעיל. מידע על השירות ניתן למצוא בכתובת http://esya.ru.</string>
     <string name="osmodroid_plugin_name">תוסף OsMoDroid</string>
 	<string name="tip_altitude_offset_t">"\tרוב התקני האיכון מדווחים על מדידות גובה לפי מערכת הצירים WGS84 אשר מבוססת על אליפסואיד, אשר המרה ממנה למערכות בהן משתמשת המערכת דורשת תיקון בהתאם למיקום.
 \n\tדיוק טוב יותר אפשר לקבל עם מערכת הצירים EGM96. ב־OsmAnd יש כעת גם תמיכה בהצגה אוטומטית של גבהים במערכת EGM96.
 \n\tכדי להגיע למצב כזה, עליך פשוט להוריד את הקובץ WW15MGH.DAC דרך מנהל הנתונים הבלתי מקוונים (המקור בכתובת http://earth-info.nga.mil/GandG/wgs84/gravitymod/egm96/binary/WW15MGH.DAC). "</string>
     <string name="index_srtm_parts">קטעים</string>
     <string name="index_srtm_ele">קווי הגבהה</string>
-    <string name="srtm_plugin_description">תוסף SRTM (להוסיף תיאור)</string>
+    <string name="srtm_plugin_description">תוסף זה מאפשר להוריד קווי הגבהה (הורדת מפות -&gt; תפריט -&gt; מפות אחרות) עבור קטע מסוים ולהשתמש בהם למפות בלתי מקוונות.</string>
     <string name="srtm_plugin_name">תוסף SRTM</string>
     <string name="download_select_map_types">מפות אחרות</string>
     <string name="download_srtm_maps">מפות SRTM</string>
     <string name="osmand_distance_plugin_description">מדידת המרחק בין שתי נקודות. יש להגדיר את המקור / יעד / להתעלם מהמדידות על ידי לחיצה ארוכה.</string>
 	<string name="osmand_distance_plugin_name">מחשבון מרחק</string>
-</resources>
+<string name="audionotes_location_not_defined">המיקום לא מוגדר עדיין לצורכי שמירת הערות קוליות</string>
+    <string name="monitoring_control_stop">עצירה</string>
+    <string name="map_widget_audionotes">הערות קוליות</string>
+    <string name="audionotes_plugin_description">תיאור תוסף ההערות הקוליות</string>
+    <string name="audionotes_plugin_name">תוסף הערות קוליות</string>
+    <string name="srtm_plugin_attribution">ASTER הוא מוצר מבית METIS ו־NASA</string>
+    <string name="osmand_srtm_short_description_80_chars">תוסף ל־OsmAnd לקווי מתאר בלתי מקוונים</string>
+    <string name="use_clear_distance_measurement">יש ללחוץ פעם נוספת כדי למחוק את נקודות המדידה.</string>
+    <string name="map_widget_distancemeasurement">מדידת מרחק</string>
+    <string name="use_distance_measurement">יש לגעת כדי להציב נקודה, ללחוץ ולהחזיק כדי למחוק את הנקודה הקודמת, ללחוץ על וידג׳ט המדידה כדי לצאת.</string>
+    <string name="recording_is_recorded">השמע/וידאו מוקלטים. כדי להפסיק זאת יש ללחוץ על לחצן העצירה בווידג׳ט.</string>
+    <string name="recording_playing">השמע מההקלטה שצוינה מושמע.\n%1$s</string>
+    <string name="recording_open_external_player">פתיחת נגן חיצוני</string>
+    <string name="recording_delete_confirm">האם ברצונך להסיר הקלטה זו?</string>
+    <string name="tip_recent_changes_1_1_0_t">"שינויים ב־1.1.0 :
+\n\t* תוסף מחשבון מרחק
+\n\t* תוסף הערות קוליות
+\n\t* תוסף קווי מתאר
+\n\t* תיקוני תקלות
+\n\t* סגנון מפה \'תצוגת טיול\' עם יותר פרטים במפה, סגנונות דרכים חדשים, יותר ניגודיות ואפשרות טיול באלפים (אמות מידה SAC)\n\t* תיקון סטיית מזהה גאוגרפי EGM96 עבור קריאת גובה דרך התקן האיכון "</string>
+    <string name="recording_unavailable">לא זמין</string>
+    <string name="recording_context_menu_arecord">הקלטת הערה קולית</string>
+    <string name="recording_context_menu_vrecord">צילום הערת וידאו</string>
+    <string name="layer_recordings">שכבת ההקלטה</string>
+    <string name="recording_can_not_be_played">לא ניתן לנגן את ההקלטה</string>
+    <string name="recording_context_menu_delete">מחיקת הקלטה</string>
+    <string name="recording_context_menu_play">נגינה</string>
+    <string name="recording_description">%1$s %2$s מוקלטים ב־%3$s</string>
+    <string name="recording_default_name">בהקלטה</string>
+    <string name="av_control_stop">עצירה</string>
+    <string name="av_control_start">הקלטה</string>
+    <string name="map_widget_av_notes">הערות קוליות</string>
+    <string name="av_def_action_video">הקלטת וידאו</string>
+    <string name="av_def_action_audio">הקלטת שמע</string>
+    <string name="av_widget_action_descr">בחירת פעולת הווידג׳ט כבררת המחדל</string>
+    <string name="av_widget_action">פעולת הווידג׳ט כבררת המחדל</string>
+    <string name="av_video_format_descr">נא לבחור תבנית פלט וידאו</string>
+    <string name="av_video_format">תבנית פלט וידאו</string>
+    <string name="av_use_external_recorder_descr">להשתמש במקליט המערכת עבור וידאו</string>
+    <string name="av_use_external_recorder">להשתמש במקליט חיצוני</string>
+    <string name="av_settings_descr">הגדרת תצורת השמע והווידאו</string>
+    <string name="av_settings">"הגדרות שמע/וידאו "</string>
+    <string name="recording_error">"אירעה שגיאה בזמן ההקלטה "</string>
+    <string name="recording_camera_not_available">המצלמה אינה זמינה</string>
+    <string name="osmand_srtm_long_description_1000_chars">תוסף זה מספק קווי מתאר שניתן להציג על המפות הבלתי מקוונות של OsmAnd. הנתונים הגלובליים (בין 70 מעלות צפון ל־70 מעלות דרום) מבוססת על מדידות שבוצעו על ידי ה־SRTM (משימת הטופוגרפיה של מעבורת המכ״ם) ו־ASTER (רדיומטר חלל מתקדם לגילוי פליטה תרמית והשתקפות), התקן דימות על סיפונה של Terra, לוויין הדגל של מערכת ההשפעה על כדור הארץ של NASA.‏ ASTER הנו שיתוף פעולה בין NASA, משרד התמ״ת היפני (METI) ומערכות החלל היפניות (J-spacesystems).</string>
+    <string name="srtm_paid_version_msg">נא לשקול לקנות את תוסף קווי המתאר מהחנות כדי לתמוך בפיתוח עתידי.</string>
+    <string name="srtm_paid_version_title">תוסף קווי מתאר</string>
+    </resources>

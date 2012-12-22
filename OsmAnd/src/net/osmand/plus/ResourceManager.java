@@ -42,6 +42,7 @@ import net.osmand.plus.AsyncLoadingThread.TileLoadDownloadRequest;
 import net.osmand.plus.AsyncLoadingThread.TransportLoadRequest;
 import net.osmand.plus.render.MapRenderRepositories;
 import net.osmand.plus.render.NativeOsmandLibrary;
+import net.osmand.plus.srtmplugin.SRTMPlugin;
 import net.osmand.plus.views.OsmandMapLayer.DrawSettings;
 import net.osmand.render.RenderingRulesStorage;
 
@@ -69,6 +70,7 @@ public class ResourceManager {
 
 	public static final String APP_DIR = "osmand/"; //$NON-NLS-1$
 	public static final String ROUTING_XML = APP_DIR + "routing.xml";
+	public static final String AV_PATH = APP_DIR + IndexConstants.AV_INDEX_DIR;
 	public static final String SRTM_PATH = APP_DIR + IndexConstants.SRTM_INDEX_DIR;
 	public static final String VOICE_PATH = APP_DIR + IndexConstants.VOICE_INDEX_DIR;
 	public static final String GPX_PATH = APP_DIR + "tracks";
@@ -396,6 +398,7 @@ public class ResourceManager {
 		warnings.addAll(indexingMaps(progress));
 		warnings.addAll(indexingPoi(progress));
 		warnings.addAll(indexVoiceFiles(progress));
+		warnings.addAll(OsmandPlugin.onIndexingFiles(progress));
 		
 		return warnings;
 	}
@@ -555,7 +558,9 @@ public class ResourceManager {
 		long val = System.currentTimeMillis();
 		ArrayList<File> files = new ArrayList<File>();
 		collectFiles(context.getSettings().extendOsmandPath(MAPS_PATH), IndexConstants.BINARY_MAP_INDEX_EXT, files);
-		collectFiles(context.getSettings().extendOsmandPath(SRTM_PATH), IndexConstants.BINARY_MAP_INDEX_EXT, files);
+		if(OsmandPlugin.getEnabledPlugin(SRTMPlugin.class) != null) {
+			collectFiles(context.getSettings().extendOsmandPath(SRTM_PATH), IndexConstants.BINARY_MAP_INDEX_EXT, files);
+		}
 		List<String> warnings = new ArrayList<String>();
 		renderer.clearAllResources();
 		CachedOsmandIndexes cachedOsmandIndexes = new CachedOsmandIndexes();

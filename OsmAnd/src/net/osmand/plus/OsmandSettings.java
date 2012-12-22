@@ -644,6 +644,8 @@ public class OsmandSettings {
 	// this value string is synchronized with settings_pref.xml preference name
 	public final OsmandPreference<Boolean> SHOW_OSM_BUGS = new BooleanPreference("show_osm_bugs", false).makeGlobal();
 	
+	public final OsmandPreference<Boolean> SHOW_RECORDINGS = new BooleanPreference("show_recordings", true).makeGlobal();
+	
 	public final OsmandPreference<String> MAP_INFO_CONTROLS = new StringPreference("map_info_controls", "").makeProfile();
 	
 	// this value string is synchronized with settings_pref.xml preference name
@@ -703,7 +705,6 @@ public class OsmandSettings {
 		POSITION_ON_MAP.setModeDefaultValue(ApplicationMode.CAR, BOTTOM_CONSTANT);
 		POSITION_ON_MAP.setModeDefaultValue(ApplicationMode.BICYCLE, BOTTOM_CONSTANT);
 		POSITION_ON_MAP.setModeDefaultValue(ApplicationMode.PEDESTRIAN, CENTER_CONSTANT);
-		
 	}
 	
 	// this value string is synchronized with settings_pref.xml preference name
@@ -1076,7 +1077,7 @@ public class OsmandSettings {
 		return saveIntermediatePoints(ps,ds);
 	}
 
-	private boolean saveIntermediatePoints(List<LatLon> ps, List<String> ds) {
+	public boolean saveIntermediatePoints(List<LatLon> ps, List<String> ds) {
 		StringBuilder sb = new StringBuilder();
 		for(int i=0; i<ps.size(); i++) {
 			if(i > 0){
@@ -1418,6 +1419,16 @@ public class OsmandSettings {
 	
 	public final CommonPreference<Boolean> SHOW_RULER = 
 			new BooleanPreference("show_ruler", true).makeProfile().cache();
+	
+	public final CommonPreference<Boolean> AV_EXTERNAL_RECORDER = new BooleanPreference("av_external_recorder", false).makeGlobal();
+	
+	public static final int VIDEO_OUTPUT_MP4 = 0;
+	public static final int VIDEO_OUTPUT_3GP = 1;
+	public final CommonPreference<Integer> AV_VIDEO_FORMAT = new IntPreference("av_video_format", VIDEO_OUTPUT_MP4).makeGlobal();
+	
+	public static final int AV_DEFAULT_ACTION_AUDIO = 0;
+	public static final int AV_DEFAULT_ACTION_VIDEO = 1;
+	public final CommonPreference<Integer> AV_DEFAULT_ACTION = new IntPreference("av_default_action", AV_DEFAULT_ACTION_AUDIO).makeGlobal();
 	
 
 	public final OsmandPreference<Integer> NUMBER_OF_FREE_DOWNLOADS = new IntPreference("free_downloads_v1", 0).makeGlobal();
