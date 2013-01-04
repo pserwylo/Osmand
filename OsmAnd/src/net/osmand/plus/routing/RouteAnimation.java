@@ -1,10 +1,12 @@
 package net.osmand.plus.routing;
 
+
 import java.util.ArrayList;
 import java.util.List;
 
 import net.osmand.CallbackWithObject;
 import net.osmand.GPXUtilities;
+import net.osmand.Location;
 import net.osmand.plus.OsmandApplication;
 import net.osmand.plus.R;
 import net.osmand.plus.activities.MapActivity;
@@ -12,7 +14,6 @@ import net.osmand.plus.routing.RouteProvider.GPXRouteParams;
 import android.app.AlertDialog;
 import android.app.AlertDialog.Builder;
 import android.content.DialogInterface;
-import android.location.Location;
 import android.view.View;
 import android.widget.SeekBar;
 import android.widget.TextView;
@@ -29,7 +30,7 @@ public class RouteAnimation {
 			final MapActivity ma) {
 		if (!isRouteAnimating()) {
 			Builder builder = new AlertDialog.Builder(ma);
-			builder.setTitle("Do you want to use existing GPX file?");
+			builder.setTitle(R.string.animate_routing_using_gpx);
 			final View view = ma.getLayoutInflater().inflate(R.layout.animate_route, null);
 			((TextView)view.findViewById(R.id.MinSpeedup)).setText("1"); //$NON-NLS-1$
 			((TextView)view.findViewById(R.id.MaxSpeedup)).setText("4"); //$NON-NLS-1$

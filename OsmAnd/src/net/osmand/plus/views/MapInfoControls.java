@@ -10,15 +10,15 @@ import java.util.Set;
 import java.util.TreeSet;
 
 import net.osmand.Algoritms;
+import net.osmand.plus.ApplicationMode;
 import net.osmand.plus.OsmandSettings;
 import net.osmand.plus.OsmandSettings.CommonPreference;
 import net.osmand.plus.OsmandSettings.OsmandPreference;
-import net.osmand.plus.activities.ApplicationMode;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
-import android.widget.TextView;
 import android.widget.LinearLayout.LayoutParams;
+import android.widget.TextView;
 
 public class MapInfoControls {
 	
@@ -159,9 +159,12 @@ public class MapInfoControls {
 			if(set != null) {
 				if (set.contains(key)) {
 					def = true;
+					collapse = false;
 				} else if (set.contains("-" + key)) {
 					def = false;
+					collapse = false;
 				} else if(set.contains("+"+key)){
+					def = false;
 					collapse = true;	
 				}
 			}

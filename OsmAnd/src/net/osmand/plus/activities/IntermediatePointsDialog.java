@@ -53,7 +53,7 @@ public class IntermediatePointsDialog {
 					double lat = ((MapActivity) activity).getMapView().getLatitude();
 					double lon = ((MapActivity) activity).getMapView().getLongitude();
 					double meters = MapUtils.getDistance(intermediates.get(position), lat, lon);
-					distString = OsmAndFormatter.getFormattedDistance((float) meters, activity);
+					distString = OsmAndFormatter.getFormattedDistance((float) meters, app);
 				}
 				
 				nm += app.getString(R.string.target_point, distString);
@@ -138,7 +138,7 @@ public class IntermediatePointsDialog {
 			}
 		});
 		if (!changeOrder) {
-			builder.setNeutralButton("Change order", new DialogInterface.OnClickListener() {
+			builder.setNeutralButton(R.string.intermediate_points_change_order, new DialogInterface.OnClickListener() {
 				@Override
 				public void onClick(DialogInterface dialog, int which) {
 					openIntermediatePointsDialog(activity, app, true);

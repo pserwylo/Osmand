@@ -1,0 +1,102 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+<string name="srtm_paid_version_msg">Du bør overveje at købe Højdekurve plugin\'et på Google Play for at støtte den videre udvikling.</string>
+    <string name="av_def_action_video">optag video</string>
+    <string name="av_def_action_audio">Optag lyd</string>
+    <string name="av_widget_action_descr">Vælg standard widget handling</string>
+    <string name="av_widget_action">Standard widget handling</string>
+    <string name="av_video_format_descr">Vælg video output format</string>
+    <string name="av_use_external_recorder_descr">Brug systemoptager for video</string>
+    <string name="av_use_external_recorder">Brug ekstern optager</string>
+    <string name="av_settings_descr">Konfigurer lyd-og videoindstillinger</string>
+    <string name="av_settings">"Lyd/video indstillinger "</string>
+    <string name="recording_error">"Fejl opstod under optagelse "</string>
+    <string name="recording_camera_not_available">Kameraet er ikke tilgængelig</string>
+    <string name="recording_is_recorded">Audio/video bliver optaget. For at stoppe den trykker stop-knappen på widget.</string>
+    <string name="recording_playing">En lyd fra den angivne optagelsen bliver afspillet. %1$s</string>
+    <string name="recording_open_external_player">Åbn ekstern afspiller</string>
+    <string name="recording_delete_confirm">Ønsker du at fjerne denne optagelse?</string>
+    <string name="tip_recent_changes_1_1_0_t">"Ændringer i 1.1.0:\n\t*Afstand regnemaskine plugin\n\t*Audio notater plugin
+\n\t*Contour linjer plugin
+\n\t*Fejlrettelser
+\n\t*\'Touring view\' kort stil option med flere kort oplysninger, nye veje stilarter, mere kontrast og Alpine vandreture (SAC skala) option
+\n\t*EGM96 geoid offset korrektion for GPS højdeaflæsningerne "</string>
+    <string name="recording_unavailable">utilgængelig</string>
+    <string name="recording_context_menu_arecord">Tag en lydnote</string>
+    <string name="srtm_paid_version_title">Højdekurver plugin</string>
+    <string name="recording_context_menu_vrecord">Tag en videonote</string>
+    <string name="layer_recordings">Optagelses laget</string>
+    <string name="recording_can_not_be_played">Optagelse kan ikke afspilles</string>
+    <string name="recording_context_menu_delete">Slet optagelse</string>
+    <string name="recording_context_menu_play">Afspil</string>
+    <string name="recording_description">Optagelse %1$s %2$s på %3$s</string>
+    <string name="recording_default_name">indspilning</string>
+    <string name="av_control_start">optag</string>
+    <string name="map_widget_av_notes">Lydnoter</string>
+    <string name="osmand_srtm_short_description_80_chars">OsmAnd plugin for offline højdekurver</string>
+    <string name="osmand_srtm_long_description_1000_chars">Dette plugin giver højdekurver, der kan vises i OsmAnd\'s offline maps. Det globale data (mellem 70 grader nord og 70 grader syd) er baseret på målinger af SRTM (Shuttle Radar Topografi Mission) og ASTER (Advanced rumbårne Thermal Emission og Reflection Radiometer), en billeddannende instrument ombord Terra, en flagskibet satellit fra NASAs Earth Observing systemet. ASTER er et samarbejde mellem NASA, Japans ministerium for økonomi, handel og industri (METI), og Japan Space Systems (J-spacesystems).</string>
+    <string name="osmand_distance_plugin_description">Måle en afstand mellem to og mange punkter. Tilføj point ved en kort klik og fjern ved et langt tryk.</string>
+    <string name="osmand_distance_plugin_name">Afstandsberegner</string>
+    <string name="use_clear_distance_measurement">Klikke en gang til for at fjerne målepunkter.</string>
+    <string name="use_distance_measurement">Tryk for at lave et punkt, tryk og hold for at slette tidligere punkt, klik på målings widget for at afslutte.</string>
+    <string name="av_control_stop">stop</string>
+    <string name="map_widget_distancemeasurement">Afstandsmåling</string>
+    <string name="audionotes_location_not_defined">Placering til at associere med noten er ikke defineret endnu. \"Brug placering ...\" at tildele en note til den angivne placering</string>
+    <string name="monitoring_control_stop">stop</string>
+    <string name="map_widget_audionotes">Lydnoter</string>
+    <string name="audionotes_plugin_description">Tage lydnoter under turen</string>
+    <string name="audionotes_plugin_name">Audionotes plugin</string>
+    <string name="index_srtm_parts">dele</string>
+    <string name="index_srtm_ele">Højdekurver</string>
+    <string name="srtm_plugin_description">Dette plugin gør det muligt at downloade højdekurver (Offline data Download -&gt; Menu -&gt; Andre kort) til brug sammen med offline maps.</string>
+    <string name="srtm_plugin_name">Højdekurver plugin</string>
+    <string name="download_select_map_types">Andre kort</string>
+    <string name="download_roads_only_item">"Veje "</string>
+    <string name="download_srtm_maps">Højdekurve data</string>
+    <string name="download_regular_maps">Almindelige kort</string>
+    <string name="download_roads_only_maps">Kort kun med veje</string>
+    
+	<string name="rendering_attr_noAdminboundaries_name">Skjul grænser</string>
+	<string name="animate_routing_using_gpx">Vil du bruge eksisterende GPX-fil?</string>
+    <string name="intermediate_points_change_order">Ændre rækkefølge</string>
+    <string name="av_video_format">Videooutput format</string>
+    <string name="rendering_attr_noAdminboundaries_description">Undertryk visning af regionale grænser (admin niveau 5-9)</string>
+    <string name="osmodroid_plugin_old_ver_not_supported">OsMoDroid plugin har en gammel version og skal opdateres.</string>
+    <string name="osmodroid_plugin_description">OsMoDroid plugin er OsmAnd udvidelse til OsModroid app for live sporings funktioner. Oplysninger om tjenesten er tilgængelig på http://esya.ru.</string>
+    <string name="tip_altitude_offset">Højde Display - Offset korrektion</string>
+	<string name="tip_altitude_offset_t">"\tDe fleste GPS-enheder gengiver højdemålinger i det ellipsoid-baserede WGS84 referencesystem, hvorfra en konvertering til lokalt anvendte systemer kræver en positions afhængig korrektion.
+\n\tEn bedre tilnærmelse til disse lokale systemer er EGM96 reference. OsmAnd nu understøtter også den automatiske visning af højder i EGM96 systemet.
+\n\tFor at opnå dette, skal du blot downloade filen WW15MGH.DAC via Offline Data Manager (oprindelig er på http://earth-info.nga.mil/GandG/wgs84/gravitymod/egm96/binary/WW15MGH.DAC). "</string>
+    <string name="map_widget_max_speed">Hastighedsgrænse</string>
+    <string name="route_descr_current_location">Aktuel position</string>
+    <string name="route_descr_from_to">Fra : %1$s\nTil : %2$s</string>
+    <string name="route_descr_from_to_via">Fra : %1$s\nVia : %2$s\nTil : %3$s</string>
+    <string name="no_buildings_found">Ingen bygninger blev fundet.</string>
+    <string name="incremental_search_city">Søge by trinvist</string>
+    <string name="search_villages_and_postcodes">Søg landsbyer/postnummer</string>
+	<string name="dropbox_plugin_description">Dropbox plugin gør det muligt at synkronisere spor og video/audio noter med din dropbox-konto.</string>
+    <string name="osmodroid_plugin_name"/>
+	<string name="monitoring_control_start"/>
+    <string name="route_descr_lat_lon"/>
+    <string name="rendering_attr_showRoadMaps_description">Vælg, for at vise kun-vejkort:</string>
+	<string name="rendering_attr_showRoadMaps_name">Kun vejkort</string>
+    <string name="safe_mode_description">Kør program i fejlsikret tilstand (med langsommere Android i stedet for native kode).</string>
+    <string name="safe_mode">Fejlsikret tilstand</string>
+    <string name="native_library_not_running">Programmet kører i fejlsikret tilstand (deaktivere det i indstillinger).</string>
+    <string name="background_service_is_enabled_question">Baggrund tjeneste kører stadig. Ønsker du at annullere det?</string>
+    <string name="tip_recent_changes_1_0_0_t">"Ændringer i 1.0.0:
+\n\t* Forbedret routing: hurtigere, mere præcis, op til 250 km
+\n\t* Indførelse af veje, der kun kort
+\n\t* Kort ikke mister position lås efter afbrydelser
+\n\t* Aktiver tjeneste i baggrunden under navigation "</string>
+    <string name="close_changeset">Luk changeset</string>
+	<string name="zxing_barcode_scanner_not_found">ZXing Barcode Scanner programmet er ikke installeret. Søg i Google Play?</string>
+	<string name="rendering_attr_roadColors_description">Vælg et vej farveskema:</string>
+	<string name="rendering_attr_roadColors_name">Farveskema for veje</string>
+    <string name="map_widget_show_destination_arrow">Vis destinations retning</string>
+    <string name="enable_plugin_monitoring_services">Aktiver sporings plugin til at bruge position logging tjenester (logning, live tracking)</string>
+    <string name="dropbox_plugin_name"/>
+    <string name="non_optimal_route_calculation">Beregn en mulig ikke-optimal rute over lange afstande</string>
+	<string name="gps_not_available">Aktiver GPS i indstillinger</string>
+    <string name="map_widget_monitoring_services">Logføring tjenester</string>
+	</resources>
