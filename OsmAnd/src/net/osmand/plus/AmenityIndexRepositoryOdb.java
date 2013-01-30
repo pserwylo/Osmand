@@ -11,13 +11,12 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import net.osmand.Algoritms;
 import net.osmand.IProgress;
-import net.osmand.LogUtil;
+import net.osmand.IndexConstants;
+import net.osmand.PlatformUtil;
 import net.osmand.ResultMatcher;
 import net.osmand.data.Amenity;
 import net.osmand.data.AmenityType;
-import net.osmand.data.IndexConstants;
 import net.osmand.osm.Entity;
 import net.osmand.osm.LatLon;
 import net.osmand.osm.MapRenderingTypes;
@@ -25,6 +24,7 @@ import net.osmand.osm.MapUtils;
 import net.osmand.osm.Node;
 import net.osmand.osm.io.IOsmStorageFilter;
 import net.osmand.osm.io.OsmBaseStorage;
+import net.osmand.util.Algorithms;
 import net.sf.junidecode.Junidecode;
 
 import org.apache.commons.logging.Log;
@@ -35,7 +35,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteStatement;
 
 public class AmenityIndexRepositoryOdb extends BaseLocationIndexRepository<Amenity> implements AmenityIndexRepository {
-	private static final Log log = LogUtil.getLog(AmenityIndexRepositoryOdb.class);
+	private static final Log log = PlatformUtil.getLog(AmenityIndexRepositoryOdb.class);
 	public final static int LIMIT_AMENITIES = 500;
 
 		
@@ -136,8 +136,8 @@ public class AmenityIndexRepositoryOdb extends BaseLocationIndexRepository<Ameni
 		}
 		boolean inside = cTopLatitude >= topLatitude && cLeftLongitude <= leftLongitude && cRightLongitude >= rightLongitude
 				&& cBottomLatitude <= bottomLatitude && zoom == cZoom;
-		boolean noNeedToSearch = inside &&  Algoritms.objectEquals(filterId, cFilterId);
-		if((inside || fillFound) && toFill != null && Algoritms.objectEquals(filterId, cFilterId)){
+		boolean noNeedToSearch = inside &&  Algorithms.objectEquals(filterId, cFilterId);
+		if((inside || fillFound) && toFill != null && Algorithms.objectEquals(filterId, cFilterId)){
 			for(Amenity a : cachedObjects){
 				LatLon location = a.getLocation();
 				if (location.getLatitude() <= topLatitude && location.getLongitude() >= leftLongitude && location.getLongitude() <= rightLongitude

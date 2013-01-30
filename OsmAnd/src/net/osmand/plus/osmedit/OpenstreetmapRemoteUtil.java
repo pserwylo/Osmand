@@ -17,10 +17,7 @@ import java.text.MessageFormat;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-import net.osmand.Algoritms;
-import net.osmand.Base64;
-import net.osmand.LogUtil;
-import net.osmand.Version;
+import net.osmand.PlatformUtil;
 import net.osmand.access.AccessibleToast;
 import net.osmand.data.Amenity;
 import net.osmand.osm.Entity;
@@ -33,6 +30,9 @@ import net.osmand.osm.io.OsmBaseStorage;
 import net.osmand.plus.OsmandApplication;
 import net.osmand.plus.OsmandSettings;
 import net.osmand.plus.R;
+import net.osmand.plus.Version;
+import net.osmand.util.Base64;
+import net.osmand.util.IOUtils;
 
 import org.apache.commons.logging.Log;
 import org.apache.http.HttpResponse;
@@ -70,7 +70,7 @@ public class OpenstreetmapRemoteUtil extends AbstractOpenstreetmapUtil {
 	private long changeSetId = NO_CHANGESET_ID;
 	private long changeSetTimeStamp = NO_CHANGESET_ID;
 
-	public final static Log log = LogUtil.getLog(OpenstreetmapRemoteUtil.class);
+	public final static Log log = PlatformUtil.getLog(OpenstreetmapRemoteUtil.class);
 
 	private OsmandSettings settings;
 
@@ -93,7 +93,7 @@ public class OpenstreetmapRemoteUtil extends AbstractOpenstreetmapUtil {
 		additionalData.put("description", description);
 		additionalData.put("tags", tagstring);
 		additionalData.put("visibility", visibility);
-		return Algoritms.uploadFile(url, f, settings.USER_NAME.get()+":"+
+		return IOUtils.uploadFile(url, f, settings.USER_NAME.get()+":"+
 				settings.USER_PASSWORD.get(), "file", true, additionalData);
 	}
 	

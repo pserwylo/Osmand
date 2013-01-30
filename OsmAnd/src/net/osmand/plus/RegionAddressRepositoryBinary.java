@@ -2,18 +2,17 @@ package net.osmand.plus;
 
 
 import java.io.IOException;
-import java.text.Collator;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 import java.util.TreeMap;
 
+import net.osmand.Collator;
 import net.osmand.CollatorStringMatcher;
 import net.osmand.CollatorStringMatcher.StringMatcherMode;
-import net.osmand.LogUtil;
+import net.osmand.PlatformUtil;
 import net.osmand.ResultMatcher;
 import net.osmand.binary.BinaryMapAddressReaderAdapter;
 import net.osmand.binary.BinaryMapIndexReader;
@@ -28,7 +27,7 @@ import org.apache.commons.logging.Log;
 
 
 public class RegionAddressRepositoryBinary implements RegionAddressRepository {
-	private static final Log log = LogUtil.getLog(RegionAddressRepositoryBinary.class);
+	private static final Log log = PlatformUtil.getLog(RegionAddressRepositoryBinary.class);
 	private BinaryMapIndexReader file;
 	private String region;
 	
@@ -41,11 +40,8 @@ public class RegionAddressRepositoryBinary implements RegionAddressRepository {
 	public RegionAddressRepositoryBinary(BinaryMapIndexReader file, String name) {
 		this.file = file;
 		this.region = name;
- 	    this.collator = Collator.getInstance(Locale.US);
- 	    this.collator.setStrength(Collator.PRIMARY); //ignores also case
- 	    Collator sortcollator = Collator.getInstance();
- 	    sortcollator.setStrength(Collator.PRIMARY); //ignores also case
-		this.postCodes = new TreeMap<String, City>(sortcollator);
+ 	    this.collator = PlatformUtil.primaryCollator();
+		this.postCodes = new TreeMap<String, City>(PlatformUtil.primaryCollator());
 	}
 	
 	@Override
@@ -137,12 +133,13 @@ public class RegionAddressRepositoryBinary implements RegionAddressRepository {
 		}
 		try {
 			// essentially index is created that cities towns are first in cities map
-			if (/*name.length() >= 2 && Algoritms.containsDigit(name) && */searchVillages) {
+			if (/*name.length() >= 2 && Algorithms.containsDigit(name) && */searchVillages) {
 				// also try to identify postcodes
 				String uName = name.toUpperCase();
-				for (City code : file.getCities(region, BinaryMapIndexReader.buildAddressRequest(resultMatcher), 
-						new CollatorStringMatcher(collator, uName, StringMatcherMode.CHECK_CONTAINS), false, 
-						BinaryMapAddressReaderAdapter.POSTCODES_TYPE)) {
+				List<City> foundCities = file.getCities(region, BinaryMapIndexReader.buildAddressRequest(resultMatcher), 
+						new CollatorStringMatcher(uName, StringMatcherMode.CHECK_CONTAINS), false, 
+						BinaryMapAddressReaderAdapter.POSTCODES_TYPE);
+				for (City code : foundCities) {
 					citiesToFill.add(code);
 					if (resultMatcher.isCancelled()) {
 						return citiesToFill;
@@ -165,9 +162,10 @@ public class RegionAddressRepositoryBinary implements RegionAddressRepository {
 
 			int initialsize = citiesToFill.size();
 			if (/*name.length() >= 3 && */searchVillages) {
-				for (City c : file.getCities(region, BinaryMapIndexReader.buildAddressRequest(resultMatcher),
-						new CollatorStringMatcher(collator, name,StringMatcherMode.CHECK_STARTS_FROM_SPACE), useEnglishNames, 
-						BinaryMapAddressReaderAdapter.VILLAGES_TYPE)) {
+				List<City> foundCities = file.getCities(region, BinaryMapIndexReader.buildAddressRequest(resultMatcher),
+						new CollatorStringMatcher(name,StringMatcherMode.CHECK_STARTS_FROM_SPACE), useEnglishNames, 
+						BinaryMapAddressReaderAdapter.VILLAGES_TYPE);
+				for (City c : foundCities) {
 					citiesToFill.add(c);
 					if (resultMatcher.isCancelled()) {
 						return citiesToFill;

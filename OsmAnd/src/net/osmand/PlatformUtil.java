@@ -1,6 +1,11 @@
 package net.osmand;
 
+import java.text.Collator;
+
 import org.apache.commons.logging.Log;
+import org.xmlpull.v1.XmlPullParser;
+import org.xmlpull.v1.XmlPullParserException;
+import org.xmlpull.v1.XmlPullParserFactory;
 
 /**
  * That class is replacing of standard LogFactory due to 
@@ -15,8 +20,9 @@ import org.apache.commons.logging.Log;
  * 5. It is impossible to set for all tags debug level (info is default) - android.util.Log#isLoggable(String, int).
  *  
  */
-public class LogUtil {
+public class PlatformUtil {
 	public static String TAG = "net.osmand"; //$NON-NLS-1$
+	public static boolean AVIAN_LIBRARY = false;
 	private static class OsmandLogImplementation implements Log {
 		
 		private final String fullName;
@@ -150,5 +156,36 @@ public class LogUtil {
 	
 	public static Log getLog(Class<?> cl){
 		return getLog(cl.getName());
+	}
+	
+	public static XmlPullParser newXMLPullParser() throws XmlPullParserException {
+		return XmlPullParserFactory.newInstance().newPullParser();
+	}
+	
+	public static net.osmand.Collator primaryCollator(){
+		final Collator instance = Collator.getInstance();
+		instance.setStrength(Collator.PRIMARY);
+		return new net.osmand.Collator() {
+			
+			@Override
+			public int compare(Object o1, Object o2) {
+				return instance.compare(o1, o2);
+			}
+			
+			@Override
+			public boolean equals(Object obj) {
+				return instance.equals(obj);
+			}
+
+			@Override
+			public boolean equals(String source, String target) {
+				return instance.equals(source, target);
+			}
+
+			@Override
+			public int compare(String source, String target) {
+				return instance.compare(source, target);
+			}
+		};
 	}
 }

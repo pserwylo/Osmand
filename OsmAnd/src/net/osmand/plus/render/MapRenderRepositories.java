@@ -19,19 +19,17 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import net.osmand.Algoritms;
 import net.osmand.IProgress;
-import net.osmand.LogUtil;
 import net.osmand.NativeLibrary.NativeSearchResult;
-import net.osmand.QuadRect;
+import net.osmand.PlatformUtil;
 import net.osmand.access.AccessibleToast;
 import net.osmand.binary.BinaryMapDataObject;
 import net.osmand.binary.BinaryMapIndexReader;
 import net.osmand.binary.BinaryMapIndexReader.MapIndex;
 import net.osmand.binary.BinaryMapIndexReader.SearchRequest;
 import net.osmand.binary.BinaryMapIndexReader.TagValuePair;
-import net.osmand.data.MapAlgorithms;
-import net.osmand.data.MapTileDownloader.IMapDownloaderCallback;
+import net.osmand.data.QuadRect;
+import net.osmand.map.MapTileDownloader.IMapDownloaderCallback;
 import net.osmand.osm.MapUtils;
 import net.osmand.plus.OsmandApplication;
 import net.osmand.plus.OsmandSettings;
@@ -44,6 +42,8 @@ import net.osmand.render.RenderingRuleProperty;
 import net.osmand.render.RenderingRuleSearchRequest;
 import net.osmand.render.RenderingRuleStorageProperties;
 import net.osmand.render.RenderingRulesStorage;
+import net.osmand.util.Algorithms;
+import net.osmand.util.MapAlgorithms;
 
 import org.apache.commons.logging.Log;
 
@@ -62,7 +62,7 @@ public class MapRenderRepositories {
 	public static boolean checkForDuplicateObjectIds = true;
 	
 
-	private final static Log log = LogUtil.getLog(MapRenderRepositories.class);
+	private final static Log log = PlatformUtil.getLog(MapRenderRepositories.class);
 	private final OsmandApplication context;
 	private final static int BASEMAP_ZOOM = 11;
 	private Handler handler;
@@ -463,7 +463,7 @@ public class MapRenderRepositories {
 				} else {
 					CommonPreference<String> settings = prefs.getCustomRenderProperty(customProp.getAttrName());
 					String res = settings.get();
-					if (!Algoritms.isEmpty(res)) {
+					if (!Algorithms.isEmpty(res)) {
 						if (customProp.isString()) {
 							renderingReq.setStringFilter(customProp, res);
 						} else if (customProp.isBoolean()) {

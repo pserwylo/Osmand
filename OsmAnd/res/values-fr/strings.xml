@@ -1133,7 +1133,7 @@
     <string name="download_select_map_types">Autres cartes</string>
     <string name="download_srtm_maps">Cartes SRTM</string>
     <string name="index_srtm_parts">parties</string>
-    <string name="osmand_distance_plugin_description">Mesurer une distance entre deux points. Spécifier l\'origine et la destination. Effacer la mesure par un appui long.</string>
+    <string name="osmand_distance_plugin_description">Mesurer une distance entre des points. Ajouter des points par des appuis courts. Les effacer par un appui long.</string>
 	<string name="osmand_distance_plugin_name">Calculateur de distances</string>
 <string name="audionotes_location_not_defined">La position courante n\'est pas encore connue pour permettre de prendre les notes audio</string>
     <string name="monitoring_control_stop">Arrêter</string>
@@ -1187,4 +1187,14 @@
     <string name="intermediate_points_change_order">Changer l\'ordre</string>
     <string name="dropbox_plugin_name">Greffon Dropbox</string>
     <string name="dropbox_plugin_description">Le greffon Dropbox permet de synchroniser des pistes et des notes audio / vidéo avec votre compte Dropbox.</string>
+    <string name="recording_context_menu_show">Afficher</string>
+    <string name="recording_photo_description">Photo %1$s à %2$s</string>
+    <string name="av_def_action_picture">Prendre une photo</string>
+    <string name="recording_context_menu_precord">Prendre une photo</string>
+    <string name="stop_routing_confirm">Êtes-vous sûr de vouloir arrêter la navigation ?</string>
+    <string name="clear_dest_confirm">Êtes-vous sûr de vouloir effacer votre point de destination ?</string>
+    <string name="precise_routing_mode">Routage précis (alpha)</string>
+    <string name="precise_routing_mode_descr">Activer le routage précis pour calculer des itinéraires précis sans failles. Il est très limité par la distance et n\'utilise pas la bibliothèque native.</string>
+    <string name="local_indexes_cat_av">Données audio/vidéo</string>
+    <string name="dist_control_start">Début</string>
     </resources>

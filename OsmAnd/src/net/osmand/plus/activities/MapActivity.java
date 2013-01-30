@@ -7,24 +7,25 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import net.osmand.Algoritms;
-import net.osmand.GPXUtilities;
-import net.osmand.GPXUtilities.GPXFile;
-import net.osmand.LogUtil;
-import net.osmand.Version;
+import net.osmand.PlatformUtil;
 import net.osmand.access.AccessibilityPlugin;
 import net.osmand.access.AccessibleActivity;
 import net.osmand.access.AccessibleAlertBuilder;
 import net.osmand.access.AccessibleToast;
 import net.osmand.access.NavigationInfo;
-import net.osmand.data.MapTileDownloader.DownloadRequest;
-import net.osmand.data.MapTileDownloader.IMapDownloaderCallback;
+import net.osmand.binary.RouteDataObject;
 import net.osmand.map.IMapLocationListener;
+import net.osmand.map.MapTileDownloader.DownloadRequest;
+import net.osmand.map.MapTileDownloader.IMapDownloaderCallback;
 import net.osmand.osm.LatLon;
 import net.osmand.osm.MapUtils;
 import net.osmand.plus.ApplicationMode;
 import net.osmand.plus.BusyIndicator;
+import net.osmand.plus.CurrentPositionHelper;
 import net.osmand.plus.FavouritesDbHelper;
+import net.osmand.plus.GPXUtilities;
+import net.osmand.plus.GPXUtilities.GPXFile;
+import net.osmand.plus.MapScreen;
 import net.osmand.plus.OsmandApplication;
 import net.osmand.plus.OsmandPlugin;
 import net.osmand.plus.OsmandSettings;
@@ -32,13 +33,17 @@ import net.osmand.plus.PoiFilter;
 import net.osmand.plus.R;
 import net.osmand.plus.ResourceManager;
 import net.osmand.plus.TargetPointsHelper;
+import net.osmand.plus.Version;
 import net.osmand.plus.activities.search.SearchActivity;
+import net.osmand.plus.monitoring.OsmandMonitoringPlugin;
 import net.osmand.plus.routing.RouteProvider.GPXRouteParams;
 import net.osmand.plus.routing.RoutingHelper;
+import net.osmand.plus.routing.RoutingHelper.RouteCalculationProgressCallback;
 import net.osmand.plus.views.AnimateDraggingMapThread;
 import net.osmand.plus.views.OsmandMapLayer;
 import net.osmand.plus.views.OsmandMapTileView;
 import net.osmand.plus.views.PointLocationLayer;
+import net.osmand.util.Algorithms;
 import android.app.AlertDialog;
 import android.app.AlertDialog.Builder;
 import android.app.Dialog;
@@ -89,7 +94,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class MapActivity extends AccessibleActivity implements IMapLocationListener, SensorEventListener {
+public class MapActivity extends AccessibleActivity implements IMapLocationListener, SensorEventListener, MapScreen {
 	
 	// stupid error but anyway hero 2.1 : always lost gps signal (temporarily unavailable) for timeout = 2000
 	private static final int GPS_TIMEOUT_REQUEST = 0;
@@ -116,6 +121,7 @@ public class MapActivity extends AccessibleActivity implements IMapLocationListe
 	private OsmandMapTileView mapView;
 	private MapActivityActions mapActions;
 	private MapActivityLayers mapLayers;
+	private CurrentPositionHelper currentPositionHelper;
 	private NavigationInfo navigationInfo;
 	
 	private SavingTrackHelper savingTrackHelper;
@@ -124,6 +130,8 @@ public class MapActivity extends AccessibleActivity implements IMapLocationListe
 	
 	private boolean sensorRegistered = false;
 	private float previousSensorValue = 0;
+	private float[] mGravs;
+	private float[] mGeoMags;
 	private float previousCorrectionValue = 360;
 	private boolean quitRouteRestoreDialog = false;
 
@@ -164,6 +172,7 @@ public class MapActivity extends AccessibleActivity implements IMapLocationListe
 		settings = getMyApplication().getSettings();	
 		mapActions = new MapActivityActions(this);
 		mapLayers = new MapActivityLayers(this);
+		currentPositionHelper = new CurrentPositionHelper(getMyApplication());
 		navigationInfo = new NavigationInfo(this);
 		requestWindowFeature(Window.FEATURE_NO_TITLE); 
 		// Full screen is not used here
@@ -232,7 +241,7 @@ public class MapActivity extends AccessibleActivity implements IMapLocationListe
 						location = loc;
 					}
 				} catch (IllegalArgumentException e) {
-					Log.d(LogUtil.TAG, "Location provider not available"); //$NON-NLS-1$
+					Log.d(PlatformUtil.TAG, "Location provider not available"); //$NON-NLS-1$
 				}
 			}
 			if(location != null){
@@ -251,14 +260,27 @@ public class MapActivity extends AccessibleActivity implements IMapLocationListe
 				Gravity.CENTER_HORIZONTAL | Gravity.TOP);
 		DisplayMetrics dm = getResources().getDisplayMetrics();
 		params.topMargin = (int) (60 * dm.density);
-		ProgressBar pb = new ProgressBar(this, null, android.R.attr.progressBarStyleHorizontal);
+		final ProgressBar pb = new ProgressBar(this, null, android.R.attr.progressBarStyleHorizontal);
 		pb.setIndeterminate(false);
 		pb.setMax(100);
 		pb.setLayoutParams(params);
 		pb.setVisibility(View.GONE);
 		
 		parent.addView(pb);
-		routingHelper.setProgressBar(pb, new Handler());
+		routingHelper.setProgressBar(new RouteCalculationProgressCallback() {
+			
+			@Override
+			public void updateProgress(int progress) {
+				pb.setVisibility(View.VISIBLE);
+				pb.setProgress(progress);
+				
+			}
+			
+			@Override
+			public void finish() {
+				pb.setVisibility(View.GONE);
+			}
+		});
 	}
 
 	
@@ -321,8 +343,8 @@ public class MapActivity extends AccessibleActivity implements IMapLocationListe
 		// if destination point was changed try to recalculate route
 		TargetPointsHelper targets = getTargetPoints();
 		if (routingHelper.isFollowingMode() && (
-				!Algoritms.objectEquals(targets.getPointToNavigate(), routingHelper.getFinalLocation() )||
-				!Algoritms.objectEquals(targets.getIntermediatePoints(), routingHelper.getIntermediatePoints())
+				!Algorithms.objectEquals(targets.getPointToNavigate(), routingHelper.getFinalLocation() )||
+				!Algorithms.objectEquals(targets.getIntermediatePoints(), routingHelper.getIntermediatePoints())
 				)) {
 			routingHelper.setFinalAndCurrentLocation(targets.getPointToNavigate(),
 					targets.getIntermediatePoints(),
@@ -380,13 +402,13 @@ public class MapActivity extends AccessibleActivity implements IMapLocationListe
 		try {
 			service.requestLocationUpdates(LocationManager.GPS_PROVIDER, GPS_TIMEOUT_REQUEST, GPS_DIST_REQUEST, gpsListener);
 		} catch (IllegalArgumentException e) {
-			Log.d(LogUtil.TAG, "GPS location provider not available"); //$NON-NLS-1$
+			Log.d(PlatformUtil.TAG, "GPS location provider not available"); //$NON-NLS-1$
 		}
 		// try to always ask for network provide : it is faster way to find location
 		try {
 			service.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, GPS_TIMEOUT_REQUEST, GPS_DIST_REQUEST, networkListener);
 		} catch (IllegalArgumentException e) {
-			Log.d(LogUtil.TAG, "Network location provider not available"); //$NON-NLS-1$
+			Log.d(PlatformUtil.TAG, "Network location provider not available"); //$NON-NLS-1$
 		}
 	}
 
@@ -772,20 +794,26 @@ public class MapActivity extends AccessibleActivity implements IMapLocationListe
 		boolean show = overruleRegister || (currentShowingAngle && location != null) || currentMapRotation == OsmandSettings.ROTATE_MAP_COMPASS;
 		// show point view only if gps enabled
 		if (sensorRegistered && !show) {
-			Log.d(LogUtil.TAG, "Disable sensor"); //$NON-NLS-1$
+			Log.d(PlatformUtil.TAG, "Disable sensor"); //$NON-NLS-1$
 			((SensorManager) getSystemService(SENSOR_SERVICE)).unregisterListener(this);
 			sensorRegistered = false;
 			previousSensorValue = 0;
 			mapLayers.getLocationLayer().setHeading(null);
 		} else if (!sensorRegistered && show) {
-			Log.d(LogUtil.TAG, "Enable sensor"); //$NON-NLS-1$
+			Log.d(PlatformUtil.TAG, "Enable sensor"); //$NON-NLS-1$
 			SensorManager sensorMgr = (SensorManager) getSystemService(SENSOR_SERVICE);
-			Sensor s = sensorMgr.getDefaultSensor(Sensor.TYPE_ORIENTATION);
-			if (s != null) {
-				if(!sensorMgr.registerListener(this, s, SensorManager.SENSOR_DELAY_NORMAL)) {
-					Log.e(LogUtil.TAG, "Sensor could not be enabled");
-				}
+			Sensor s = sensorMgr.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+			if (s == null || !sensorMgr.registerListener(this, s, SensorManager.SENSOR_DELAY_UI)) {
+				Log.e(PlatformUtil.TAG, "Sensor accelerometer could not be enabled");
 			}
+			s = sensorMgr.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD);
+			if (s == null || !sensorMgr.registerListener(this, s, SensorManager.SENSOR_DELAY_UI)) {
+				Log.e(PlatformUtil.TAG, "Sensor magnetic field could not be enabled");
+			}
+//			s = sensorMgr.getDefaultSensor(Sensor.TYPE_ORIENTATION);
+//			if (s == null || !sensorMgr.registerListener(this, s, SensorManager.SENSOR_DELAY_UI)) {
+//				Log.e(LogUtil.TAG, "Sensor orientation could not be enabled");
+//			}
 			sensorRegistered = true;
 		}
 	}
@@ -842,8 +870,8 @@ public class MapActivity extends AccessibleActivity implements IMapLocationListe
 	}
 
 	public void setLocation(net.osmand.Location location) {
-		if (Log.isLoggable(LogUtil.TAG, Log.DEBUG)) {
-			Log.d(LogUtil.TAG, "Location changed " + location.getProvider()); //$NON-NLS-1$
+		if (Log.isLoggable(PlatformUtil.TAG, Log.DEBUG)) {
+			Log.d(PlatformUtil.TAG, "Location changed " + location.getProvider()); //$NON-NLS-1$
 		}
 		// 1. Logging services
 		if (location != null) {
@@ -851,7 +879,7 @@ public class MapActivity extends AccessibleActivity implements IMapLocationListe
 			long locationTime = System.currentTimeMillis();
 			// write only with 50 meters accuracy
 			if (!location.hasAccuracy() || location.getAccuracy() < ACCURACY_FOR_GPX_AND_ROUTING) {
-				if (settings.SAVE_TRACK_TO_GPX.get()) {
+				if (settings.SAVE_TRACK_TO_GPX.get() && OsmandPlugin.getEnabledPlugin(OsmandMonitoringPlugin.class) != null) {
 					savingTrackHelper.insertData(location.getLatitude(), location.getLongitude(), location.getAltitude(),
 							location.getSpeed(), location.getAccuracy(), locationTime, settings);
 				}
@@ -1028,6 +1056,14 @@ public class MapActivity extends AccessibleActivity implements IMapLocationListe
 		return mapLayers.getLocationLayer().getLastKnownLocation();
 	}
 	
+	public float getLastSensorRotation(){
+		return previousSensorValue;
+	}
+	
+	public RouteDataObject getLastRouteDataObject(){
+		return currentPositionHelper.getLastKnownRouteSegment(getLastKnownLocation());
+	}
+	
 	public LatLon getMapLocation(){
 		return new LatLon(mapView.getLatitude(), mapView.getLongitude());
 	}
@@ -1155,6 +1191,7 @@ public class MapActivity extends AccessibleActivity implements IMapLocationListe
 		}
 	};
 	
+	
 	public LocationListener getGpsListener() {
 		return gpsListener;
 	}
@@ -1262,6 +1299,8 @@ public class MapActivity extends AccessibleActivity implements IMapLocationListe
 			LatLon l = mapView.getLatLonFromScreenPoint(mapView.getCenterPointX() + dx, mapView.getCenterPointY() + dy);
 			setMapLocation(l.getLatitude(), l.getLongitude());
 			return true;
+		} else if(OsmandPlugin.onMapActivityKeyUp(this, keyCode)) {
+			return true;
 		}
 		return super.onKeyUp(keyCode,event);
 	}
@@ -1320,7 +1359,41 @@ public class MapActivity extends AccessibleActivity implements IMapLocationListe
 	@Override
 	public void onSensorChanged(SensorEvent event) {
 		// Attention : sensor produces a lot of events & can hang the system
-		float val = event.values[0];
+		
+		float val = 0;
+		switch (event.sensor.getType()) {
+		case Sensor.TYPE_ACCELEROMETER:
+			if (mGravs == null) {
+				mGravs = new float[3];
+			}
+			System.arraycopy(event.values, 0, mGravs, 0, 3);
+			break;
+		case Sensor.TYPE_MAGNETIC_FIELD:
+			if (mGeoMags == null) {
+				mGeoMags = new float[3];
+			}
+			System.arraycopy(event.values, 0, mGeoMags, 0, 3);
+			break;
+		case Sensor.TYPE_ORIENTATION:
+			val = event.values[0];
+			if (mGravs != null && mGeoMags != null) {
+				return;
+			}
+			break;
+		default:
+			return;
+		}   
+		if (mGravs != null && mGeoMags != null) {
+			float[] mRotationM = new float[9];
+			boolean success = SensorManager.getRotationMatrix(mRotationM, null, mGravs, mGeoMags);
+			if(!success) {
+				return;
+			}
+			float[] orientation = SensorManager.getOrientation(mRotationM, new float[3]);
+			val = (float) Math.toDegrees(orientation[0]);
+		} else if(event.sensor.getType() != Sensor.TYPE_ORIENTATION){
+			return;
+		}
 		
 		if(currentScreenOrientation == 1){
 			val += 90;
@@ -1329,8 +1402,8 @@ public class MapActivity extends AccessibleActivity implements IMapLocationListe
 		} else if(currentScreenOrientation == 3){
 			val += 270;
 		}
-		net.osmand.Location l = getLastKnownLocation();
-		if(l != null && previousCorrectionValue == 360) {
+		if(previousCorrectionValue == 360 && getLastKnownLocation() != null) {
+			net.osmand.Location l = getLastKnownLocation();
 			GeomagneticField gf = new GeomagneticField((float)l.getLatitude(), (float)l.getLongitude(), 
 					(float)l.getAltitude(), System.currentTimeMillis());
 			previousCorrectionValue = gf.getDeclination();
@@ -1422,7 +1495,7 @@ public class MapActivity extends AccessibleActivity implements IMapLocationListe
 	}
 
 	
-	private boolean isMapLinkedToLocation(){
+	public boolean isMapLinkedToLocation(){
 		return isMapLinkedToLocation;
 	}
 	
@@ -1458,6 +1531,12 @@ public class MapActivity extends AccessibleActivity implements IMapLocationListe
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		OsmandPlugin.onMapActivityResult(requestCode, resultCode, data);
+	}
+
+	@Override
+	public void refreshMap() {
+		getMapView().refreshMap();
+		
 	}
 
 }

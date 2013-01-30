@@ -5,14 +5,14 @@ import gnu.trove.set.hash.TIntHashSet;
 import java.util.ArrayList;
 import java.util.List;
 
-import net.osmand.LogUtil;
-import net.osmand.OsmAndFormatter;
+import net.osmand.PlatformUtil;
 import net.osmand.access.AccessibleToast;
 import net.osmand.data.Amenity;
 import net.osmand.data.AmenityType;
 import net.osmand.osm.LatLon;
 import net.osmand.plus.ContextMenuAdapter;
 import net.osmand.plus.ContextMenuAdapter.OnContextMenuClick;
+import net.osmand.plus.OsmAndFormatter;
 import net.osmand.plus.PoiFilter;
 import net.osmand.plus.R;
 import net.osmand.plus.ResourceManager;
@@ -40,7 +40,7 @@ public class POIMapLayer extends OsmandMapLayer implements ContextMenuLayer.ICon
 	private static final int startZoom = 10;
 	public static final int TEXT_WRAP = 15;
 	public static final int TEXT_LINES = 3;
-	public static final org.apache.commons.logging.Log log = LogUtil.getLog(POIMapLayer.class);
+	public static final org.apache.commons.logging.Log log = PlatformUtil.getLog(POIMapLayer.class);
 	
 	
 	private Paint pointAltUI;

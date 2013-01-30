@@ -11,14 +11,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
-import net.osmand.Algoritms;
-import net.osmand.FavouritePoint;
-import net.osmand.GPXUtilities;
-import net.osmand.GPXUtilities.GPXFile;
-import net.osmand.GPXUtilities.WptPt;
-import net.osmand.LogUtil;
-import net.osmand.Version;
+import net.osmand.IndexConstants;
+import net.osmand.PlatformUtil;
 import net.osmand.access.AccessibleToast;
+import net.osmand.data.FavouritePoint;
+import net.osmand.plus.GPXUtilities.GPXFile;
+import net.osmand.plus.GPXUtilities.WptPt;
 import net.osmand.plus.activities.DayNightHelper;
 import net.osmand.plus.activities.LiveMonitoringHelper;
 import net.osmand.plus.activities.OsmandIntents;
@@ -27,6 +25,8 @@ import net.osmand.plus.activities.SettingsActivity;
 import net.osmand.plus.api.ExternalServiceAPI;
 import net.osmand.plus.api.InternalOsmAndAPI;
 import net.osmand.plus.api.InternalToDoAPI;
+import net.osmand.plus.api.SQLiteAPI;
+import net.osmand.plus.api.SQLiteAPIImpl;
 import net.osmand.plus.api.SettingsAPI;
 import net.osmand.plus.render.NativeOsmandLibrary;
 import net.osmand.plus.render.RendererRegistry;
@@ -35,6 +35,7 @@ import net.osmand.plus.voice.CommandPlayer;
 import net.osmand.plus.voice.CommandPlayerException;
 import net.osmand.plus.voice.CommandPlayerFactory;
 import net.osmand.render.RenderingRulesStorage;
+import net.osmand.util.Algorithms;
 import android.app.Activity;
 import android.app.AlarmManager;
 import android.app.AlertDialog;
@@ -55,8 +56,8 @@ import android.widget.Toast;
 import com.bidforfix.andorid.BidForFixHelper;
 
 public class OsmandApplication extends Application implements ClientContext {
-	public static final String EXCEPTION_PATH = ResourceManager.APP_DIR + "exception.log"; //$NON-NLS-1$
-	private static final org.apache.commons.logging.Log LOG = LogUtil.getLog(OsmandApplication.class);
+	public static final String EXCEPTION_PATH = "exception.log"; //$NON-NLS-1$
+	private static final org.apache.commons.logging.Log LOG = PlatformUtil.getLog(OsmandApplication.class);
 
 	ResourceManager manager = null;
 	PoiFiltersHelper poiFilters = null;
@@ -87,6 +88,7 @@ public class OsmandApplication extends Application implements ClientContext {
 	ExternalServiceAPI externalServiceAPI;
 	InternalToDoAPI internalToDoAPI;
 	InternalOsmAndAPI internalOsmAndAPI;
+	SQLiteAPI sqliteAPI;
 
 	@Override
 	public void onCreate() {
@@ -96,6 +98,7 @@ public class OsmandApplication extends Application implements ClientContext {
 		externalServiceAPI = new net.osmand.plus.api.ExternalServiceAPIImpl(this);
 		internalToDoAPI = new net.osmand.plus.api.InternalToDoAPIImpl(this);
 		internalOsmAndAPI = new net.osmand.plus.api.InternalOsmAndAPIImpl(this);
+		sqliteAPI = new SQLiteAPIImpl(this);
 
 		
 		osmandSettings = createOsmandSettingsInstance();
@@ -128,7 +131,7 @@ public class OsmandApplication extends Application implements ClientContext {
 	public void onTerminate() {
 		super.onTerminate();
 		if (routingHelper != null) {
-			routingHelper.getVoiceRouter().onApplicationTerminate(getApplicationContext());
+			routingHelper.getVoiceRouter().onApplicationTerminate(this);
 		}
 		if (bidforfix != null) {
 			bidforfix.onDestroy();
@@ -325,7 +328,7 @@ public class OsmandApplication extends Application implements ClientContext {
 			}
 
 		} else {
-			if (player == null || !Algoritms.objectEquals(voiceProvider, player.getCurrentVoice())) {
+			if (player == null || !Algorithms.objectEquals(voiceProvider, player.getCurrentVoice())) {
 				initVoiceDataInDifferentThread(uiContext, voiceProvider, run);
 			}
 		}
@@ -463,7 +466,7 @@ public class OsmandApplication extends Application implements ClientContext {
 			savingTrackHelper.close();
 
 			// restore backuped favorites to normal file
-			final File appDir = getSettings().extendOsmandPath(ResourceManager.APP_DIR);
+			final File appDir = getAppPath(null);
 			File save = new File(appDir, FavouritesDbHelper.FILE_TO_SAVE);
 			File bak = new File(appDir, FavouritesDbHelper.FILE_TO_BACKUP);
 			if (bak.exists() && (!save.exists() || bak.lastModified() > save.lastModified())) {
@@ -539,7 +542,7 @@ public class OsmandApplication extends Application implements ClientContext {
 
 		@Override
 		public void uncaughtException(final Thread thread, final Throwable ex) {
-			File file = osmandSettings.extendOsmandPath(EXCEPTION_PATH);
+			File file = getAppPath(EXCEPTION_PATH);
 			try {
 				ByteArrayOutputStream out = new ByteArrayOutputStream();
 				PrintStream printStream = new PrintStream(out);
@@ -571,7 +574,7 @@ public class OsmandApplication extends Application implements ClientContext {
 				defaultHandler.uncaughtException(thread, ex);
 			} catch (Exception e) {
 				// swallow all exceptions
-				android.util.Log.e(LogUtil.TAG, "Exception while handle other exception", e); //$NON-NLS-1$
+				android.util.Log.e(PlatformUtil.TAG, "Exception while handle other exception", e); //$NON-NLS-1$
 			}
 
 		}
@@ -610,6 +613,29 @@ public class OsmandApplication extends Application implements ClientContext {
 	@Override
 	public InternalOsmAndAPI getInternalAPI() {
 		return internalOsmAndAPI;
+	}
+
+	@Override
+	public SQLiteAPI getSQLiteAPI() {
+		return sqliteAPI;
+	}
+
+	@Override
+	public void runInUIThread(Runnable run) {
+		uiHandler.post(run);
+	}
+
+	@Override
+	public void runInUIThread(Runnable run, long delay) {
+		uiHandler.postDelayed(run, delay);
+	}
+
+	@Override
+	public File getAppPath(String path) {
+		if(path == null) {
+			path = "";
+		}
+		return new File(getSettings().getExternalStorageDirectory(), IndexConstants.APP_DIR + path);
 	}
 
 }

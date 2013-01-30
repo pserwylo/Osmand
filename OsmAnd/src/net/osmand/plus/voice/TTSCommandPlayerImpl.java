@@ -5,12 +5,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 
-import net.osmand.Algoritms;
-import net.osmand.LogUtil;
+import net.osmand.PlatformUtil;
 import net.osmand.plus.OsmandApplication;
-import net.osmand.plus.OsmandSettings;
 import net.osmand.plus.R;
 import net.osmand.plus.activities.SettingsActivity;
+import net.osmand.util.Algorithms;
 
 import org.apache.commons.logging.Log;
 
@@ -58,26 +57,26 @@ public class TTSCommandPlayerImpl extends AbstractPrologCommandPlayer {
 
 	private static final String CONFIG_FILE = "_ttsconfig.p";
 	private static final int[] TTS_VOICE_VERSION = new int[] { 100, 101 }; // !! MUST BE SORTED
-	private static final Log log = LogUtil.getLog(TTSCommandPlayerImpl.class);
+	private static final Log log = PlatformUtil.getLog(TTSCommandPlayerImpl.class);
 	private TextToSpeech mTts;
 	private Context mTtsContext;
 	private String language;
 	private HashMap<String, String> params = new HashMap<String, String>();
 
-	protected TTSCommandPlayerImpl(Activity ctx, OsmandSettings settings, String voiceProvider)
+	protected TTSCommandPlayerImpl(Activity ctx, String voiceProvider)
 			throws CommandPlayerException {
-		super(ctx, settings, voiceProvider, CONFIG_FILE, TTS_VOICE_VERSION);
+		super((OsmandApplication) ctx.getApplicationContext(), voiceProvider, CONFIG_FILE, TTS_VOICE_VERSION);
 		final Term langVal = solveSimplePredicate("language");
 		if (langVal instanceof Struct) {
 			language = ((Struct) langVal).getName();
 		}
-		if (Algoritms.isEmpty(language)) {
+		if (Algorithms.isEmpty(language)) {
 			throw new CommandPlayerException(
 					ctx.getString(R.string.voice_data_corrupted));
 		}
 		OsmandApplication app = (OsmandApplication) ctx.getApplicationContext();
 		initializeEngine(app, ctx);
-		params.put(TextToSpeech.Engine.KEY_PARAM_STREAM, settings.AUDIO_STREAM_GUIDANCE.get().toString());
+		params.put(TextToSpeech.Engine.KEY_PARAM_STREAM, app.getSettings().AUDIO_STREAM_GUIDANCE.get().toString());
 	}
 	
 	

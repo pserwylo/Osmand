@@ -1,18 +1,18 @@
 package net.osmand.plus.activities.search;
 
-import java.text.Collator;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 
+import net.osmand.Collator;
 import net.osmand.CollatorStringMatcher;
 import net.osmand.CollatorStringMatcher.StringMatcherMode;
-import net.osmand.LogUtil;
+import net.osmand.PlatformUtil;
 import net.osmand.data.MapObject;
 import net.osmand.osm.LatLon;
 import net.osmand.plus.OsmandApplication;
@@ -70,7 +70,7 @@ public abstract class SearchByNameAbstractActivity<T> extends OsmandListActivity
 	private T endingObject;
 	private StyleSpan previousSpan;
 	private CustomTitleBar titleBar;
-	private static final Log log = LogUtil.getLog(SearchByNameAbstractActivity.class);
+	private static final Log log = PlatformUtil.getLog(SearchByNameAbstractActivity.class);
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -87,8 +87,7 @@ public abstract class SearchByNameAbstractActivity<T> extends OsmandListActivity
 		final NamesAdapter namesAdapter = new NamesAdapter(new ArrayList<T>(), createComparator()); //$NON-NLS-1$
 		setListAdapter(namesAdapter);
 		
-		collator = Collator.getInstance(Locale.US);
- 	    collator.setStrength(Collator.PRIMARY); //ignores also case
+		collator = PlatformUtil.primaryCollator();
  	    
 		
 		progress = (ProgressBar) findViewById(R.id.ProgressBar);

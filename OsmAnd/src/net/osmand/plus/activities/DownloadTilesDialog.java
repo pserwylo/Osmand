@@ -3,17 +3,17 @@ package net.osmand.plus.activities;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 
-import net.osmand.LogUtil;
-import net.osmand.Version;
+import net.osmand.PlatformUtil;
 import net.osmand.access.AccessibleToast;
-import net.osmand.data.MapTileDownloader;
-import net.osmand.data.MapTileDownloader.DownloadRequest;
-import net.osmand.data.MapTileDownloader.IMapDownloaderCallback;
 import net.osmand.map.ITileSource;
+import net.osmand.map.MapTileDownloader;
+import net.osmand.map.MapTileDownloader.DownloadRequest;
+import net.osmand.map.MapTileDownloader.IMapDownloaderCallback;
 import net.osmand.osm.MapUtils;
 import net.osmand.plus.OsmandApplication;
 import net.osmand.plus.R;
 import net.osmand.plus.ResourceManager;
+import net.osmand.plus.Version;
 import net.osmand.plus.views.BaseMapLayer;
 import net.osmand.plus.views.MapTileLayer;
 import net.osmand.plus.views.OsmandMapTileView;
@@ -36,7 +36,7 @@ import android.widget.Toast;
 public class DownloadTilesDialog {
 
 	
-	private final static Log log = LogUtil.getLog(DownloadTilesDialog.class); 
+	private final static Log log = PlatformUtil.getLog(DownloadTilesDialog.class); 
 	private final Context ctx;
 	private final OsmandApplication app;
 	private final OsmandMapTileView mapView;

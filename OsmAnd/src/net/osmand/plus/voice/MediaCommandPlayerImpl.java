@@ -6,12 +6,11 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import net.osmand.LogUtil;
-import net.osmand.plus.OsmandSettings;
+import net.osmand.PlatformUtil;
+import net.osmand.plus.ClientContext;
 
 import org.apache.commons.logging.Log;
 
-import android.content.Context;
 import android.media.MediaPlayer;
 
 
@@ -25,7 +24,7 @@ public class MediaCommandPlayerImpl extends AbstractPrologCommandPlayer implemen
 	private static final String CONFIG_FILE = "_config.p";
 	private static final int[] MEDIA_VOICE_VERSION = new int[] { 0 }; // MUST BE SORTED, list of supported versions
 
-	private static final Log log = LogUtil.getLog(MediaCommandPlayerImpl.class);
+	private static final Log log = PlatformUtil.getLog(MediaCommandPlayerImpl.class);
 	
 	// playing media
 	private MediaPlayer mediaPlayer;
@@ -33,10 +32,10 @@ public class MediaCommandPlayerImpl extends AbstractPrologCommandPlayer implemen
 	private List<String> filesToPlay = Collections.synchronizedList(new ArrayList<String>());
 
 	
-	public MediaCommandPlayerImpl(Context ctx, OsmandSettings settings, String voiceProvider)
+	public MediaCommandPlayerImpl(ClientContext ctx, String voiceProvider)
 		throws CommandPlayerException
 	{
-		super(ctx, settings, voiceProvider, CONFIG_FILE, MEDIA_VOICE_VERSION);
+		super(ctx, voiceProvider, CONFIG_FILE, MEDIA_VOICE_VERSION);
 	}
 	
 	@Override

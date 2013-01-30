@@ -8,16 +8,16 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import net.osmand.GPXUtilities;
-import net.osmand.GPXUtilities.GPXFile;
-import net.osmand.GPXUtilities.Track;
-import net.osmand.GPXUtilities.TrkSegment;
-import net.osmand.GPXUtilities.WptPt;
-import net.osmand.LogUtil;
+import net.osmand.IndexConstants;
+import net.osmand.PlatformUtil;
 import net.osmand.osm.LatLon;
+import net.osmand.plus.GPXUtilities;
+import net.osmand.plus.GPXUtilities.GPXFile;
+import net.osmand.plus.GPXUtilities.Track;
+import net.osmand.plus.GPXUtilities.TrkSegment;
+import net.osmand.plus.GPXUtilities.WptPt;
 import net.osmand.plus.OsmandApplication;
 import net.osmand.plus.OsmandSettings;
-import net.osmand.plus.ResourceManager;
 
 import org.apache.commons.logging.Log;
 
@@ -46,7 +46,7 @@ public class SavingTrackHelper extends SQLiteOpenHelper {
 	public final static String POINT_COL_LON = "lon"; //$NON-NLS-1$
 	public final static String POINT_COL_DESCRIPTION = "description"; //$NON-NLS-1$
 	
-	public final static Log log = LogUtil.getLog(SavingTrackHelper.class);
+	public final static Log log = PlatformUtil.getLog(SavingTrackHelper.class);
 
 	private String updateScript;
 	private String updatePointsScript;
@@ -130,12 +130,10 @@ public class SavingTrackHelper extends SQLiteOpenHelper {
 	 */
 	public List<String> saveDataToGpx() {
 		List<String> warnings = new ArrayList<String>();
-		File dir = ((OsmandApplication) ctx.getApplicationContext()).getSettings().getExternalStorageDirectory();
-		if (dir.canWrite()) {
-			dir = new File(dir, ResourceManager.GPX_PATH);
+		File dir = ctx.getAppPath(IndexConstants.GPX_INDEX_DIR);
+		if (dir.getParentFile().canWrite()) {
 			dir.mkdirs();
 			if (dir.exists()) {
-
 				Map<String, GPXFile> data = collectRecordedData();
 
 				// save file

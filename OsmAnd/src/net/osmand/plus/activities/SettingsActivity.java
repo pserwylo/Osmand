@@ -10,8 +10,8 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
+import net.osmand.IndexConstants;
 import net.osmand.ResultMatcher;
-import net.osmand.Version;
 import net.osmand.access.AccessibleToast;
 import net.osmand.map.TileSourceManager;
 import net.osmand.map.TileSourceManager.TileSourceTemplate;
@@ -23,7 +23,7 @@ import net.osmand.plus.OsmandSettings.MetricsConstants;
 import net.osmand.plus.OsmandSettings.OsmandPreference;
 import net.osmand.plus.ProgressDialogImplementation;
 import net.osmand.plus.R;
-import net.osmand.plus.ResourceManager;
+import net.osmand.plus.Version;
 import net.osmand.plus.activities.CustomTitleBar.CustomTitleBarView;
 import net.osmand.plus.render.NativeOsmandLibrary;
 import net.osmand.plus.routing.RouteProvider.RouteService;
@@ -240,7 +240,7 @@ public class SettingsActivity extends PreferenceActivity implements OnPreference
 
 	private Set<String> getVoiceFiles() {
 		// read available voice data
-		File extStorage = osmandSettings.extendOsmandPath(ResourceManager.VOICE_PATH);
+		File extStorage = getMyApplication().getAppPath(IndexConstants.VOICE_INDEX_DIR);
 		Set<String> setFiles = new LinkedHashSet<String>();
 		if (extStorage.exists()) {
 			for (File f : extStorage.listFiles()) {
@@ -293,6 +293,7 @@ public class SettingsActivity extends PreferenceActivity implements OnPreference
 		registerBooleanPreference(osmandSettings.USE_ENGLISH_NAMES, screen);
 		registerBooleanPreference(osmandSettings.AUTO_ZOOM_MAP, screen);
 		registerBooleanPreference(osmandSettings.FAST_ROUTE_MODE, screen);
+		registerBooleanPreference(osmandSettings.PRECISE_ROUTING_MODE, screen);
 		registerBooleanPreference(osmandSettings.SNAP_TO_ROAD, screen);
 		registerBooleanPreference(osmandSettings.USE_COMPASS_IN_NAVIGATION, screen);
 		registerBooleanPreference(osmandSettings.LEFT_SIDE_NAVIGATION, screen);
@@ -737,7 +738,7 @@ public class SettingsActivity extends PreferenceActivity implements OnPreference
 		if (preference.getKey().equals(OsmandSettings.LOCAL_INDEXES)) {
 			boolean empty = getMyApplication().getResourceManager().getIndexFileNames().isEmpty();
 			if (empty) {
-				File folder = getMyApplication().getSettings().extendOsmandPath(ResourceManager.BACKUP_PATH);
+				File folder = getMyApplication().getAppPath(IndexConstants.BACKUP_INDEX_DIR);
 				if (folder.exists() && folder.isDirectory()) {
 					String[] l = folder.list();
 					empty = l == null || l.length == 0;

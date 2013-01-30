@@ -4,11 +4,11 @@ import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.List;
 
-import net.osmand.OsmAndFormatter;
 import net.osmand.access.AccessibleToast;
 import net.osmand.osm.LatLon;
 import net.osmand.osm.MapUtils;
 import net.osmand.plus.ApplicationMode;
+import net.osmand.plus.OsmAndFormatter;
 import net.osmand.plus.OsmandApplication;
 import net.osmand.plus.OsmandPlugin;
 import net.osmand.plus.R;
@@ -91,7 +91,7 @@ public class DistanceCalculatorPlugin extends OsmandPlugin {
 	private void updateText() {
 		if (distanceControl != null) {
 			if (distanceMeasurementMode == 0) {
-				distanceControl.setText(app.getString(R.string.monitoring_control_start), "");
+				distanceControl.setText(app.getString(R.string.dist_control_start), "");
 			} else {
 				float dist = 0;
 				for (int j = 1; j < measurementPoints.size(); j++) {

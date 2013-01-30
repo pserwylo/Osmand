@@ -17,9 +17,7 @@ import java.util.Map.Entry;
 
 import net.londatiga.android.ActionItem;
 import net.londatiga.android.QuickAction;
-import net.osmand.Algoritms;
-import net.osmand.LogUtil;
-import net.osmand.OsmAndFormatter;
+import net.osmand.PlatformUtil;
 import net.osmand.ResultMatcher;
 import net.osmand.access.AccessibleToast;
 import net.osmand.access.NavigationInfo;
@@ -29,6 +27,7 @@ import net.osmand.osm.LatLon;
 import net.osmand.osm.OpeningHoursParser;
 import net.osmand.osm.OpeningHoursParser.OpeningHours;
 import net.osmand.plus.NameFinderPoiFilter;
+import net.osmand.plus.OsmAndFormatter;
 import net.osmand.plus.OsmandApplication;
 import net.osmand.plus.OsmandSettings;
 import net.osmand.plus.PoiFilter;
@@ -39,6 +38,7 @@ import net.osmand.plus.activities.EditPOIFilterActivity;
 import net.osmand.plus.activities.MapActivity;
 import net.osmand.plus.activities.MapActivityActions;
 import net.osmand.plus.activities.OsmandListActivity;
+import net.osmand.util.Algorithms;
 import android.app.AlertDialog;
 import android.app.AlertDialog.Builder;
 import android.content.Context;
@@ -156,12 +156,12 @@ public class SearchPOIActivity extends OsmandListActivity implements SensorEvent
 					return;
 				}
 				if(isNameFinderFilter() && 
-						!Algoritms.objectEquals(((NameFinderPoiFilter) filter).getQuery(), query)){
+						!Algorithms.objectEquals(((NameFinderPoiFilter) filter).getQuery(), query)){
 					filter.clearPreviousZoom();
 					((NameFinderPoiFilter) filter).setQuery(query);
 					runNewSearchQuery(SearchAmenityRequest.buildRequest(location, SearchAmenityRequest.NEW_SEARCH_INIT));
 				} else if(isSearchByNameFilter() && 
-						!Algoritms.objectEquals(((SearchByNameFilter) filter).getQuery(), query)){
+						!Algorithms.objectEquals(((SearchByNameFilter) filter).getQuery(), query)){
 					showFilter.setVisibility(View.INVISIBLE);
 					filter.clearPreviousZoom();
 					showPoiCategoriesByNameFilter(query, location);
@@ -480,14 +480,14 @@ public class SearchPOIActivity extends OsmandListActivity implements SensorEvent
     	// show point view only if gps enabled
     	if(location == null){
     		if(sensorRegistered) {
-    			Log.d(LogUtil.TAG, "Disable sensor"); //$NON-NLS-1$
+    			Log.d(PlatformUtil.TAG, "Disable sensor"); //$NON-NLS-1$
     			((SensorManager) getSystemService(SENSOR_SERVICE)).unregisterListener(this);
     			sensorRegistered = false;
     			heading = null;
     		}
     	} else {
     		if(!sensorRegistered){
-    			Log.d(LogUtil.TAG, "Enable sensor"); //$NON-NLS-1$
+    			Log.d(PlatformUtil.TAG, "Enable sensor"); //$NON-NLS-1$
     			SensorManager sensorMgr = (SensorManager) getSystemService(SENSOR_SERVICE);
     			Sensor s = sensorMgr.getDefaultSensor(Sensor.TYPE_ORIENTATION);
     			if (s != null) {
@@ -588,7 +588,7 @@ public class SearchPOIActivity extends OsmandListActivity implements SensorEvent
 		
 		private SearchAmenityRequest request;
 		private TLongHashSet existingObjects = null;
-		private final static int LIMIT_TO_LIVE_SEARCH = 150;
+		private TLongHashSet updateExisting;
 		
 		public SearchAmenityTask(SearchAmenityRequest request){
 			this.request = request;
@@ -604,17 +604,19 @@ public class SearchPOIActivity extends OsmandListActivity implements SensorEvent
 			findViewById(R.id.ProgressBar).setVisibility(View.VISIBLE);
 			findViewById(R.id.SearchAreaText).setVisibility(View.GONE);
 			searchPOILevel.setEnabled(false);
+			existingObjects = new TLongHashSet();
+			updateExisting = new TLongHashSet();
 			if(request.type == SearchAmenityRequest.NEW_SEARCH_INIT){
 				amenityAdapter.clear();
 			} else if (request.type == SearchAmenityRequest.SEARCH_FURTHER) {
 				List<Amenity> list = amenityAdapter.getOriginalAmenityList();
-				if (list.size() < LIMIT_TO_LIVE_SEARCH) {
-					existingObjects = new TLongHashSet();
-					for (Amenity a : list) {
-						existingObjects.add(a.getId());
-					}
+				for (Amenity a : list) {
+					updateExisting.add(getAmenityId(a));
 				}
 			}
+		}
+		private long getAmenityId(Amenity a){
+			return (a.getId() << 8) + a.getType().ordinal();
 		}
 		
 		@Override
@@ -624,7 +626,7 @@ public class SearchPOIActivity extends OsmandListActivity implements SensorEvent
 			searchPOILevel.setEnabled(filter.isSearchFurtherAvailable());
 			searchPOILevel.setText(R.string.search_POI_level_btn);
 			if (isNameFinderFilter()) {
-				if (!Algoritms.isEmpty(((NameFinderPoiFilter) filter).getLastError())) {
+				if (!Algorithms.isEmpty(((NameFinderPoiFilter) filter).getLastError())) {
 					AccessibleToast.makeText(SearchPOIActivity.this, ((NameFinderPoiFilter) filter).getLastError(), Toast.LENGTH_LONG).show();
 				}
 				amenityAdapter.setNewModel(result, "");
@@ -662,15 +664,19 @@ public class SearchPOIActivity extends OsmandListActivity implements SensorEvent
 
 		@Override
 		public boolean publish(Amenity object) {
-			if(request.type == SearchAmenityRequest.NEW_SEARCH_INIT){
-				publishProgress(object);
-			} else if (request.type == SearchAmenityRequest.SEARCH_FURTHER) {
-				if(existingObjects != null && !existingObjects.contains(object.getId())){
+			long id = getAmenityId(object);
+			if (existingObjects != null && !existingObjects.contains(id)) {
+				existingObjects.add(id);
+				if (request.type == SearchAmenityRequest.NEW_SEARCH_INIT) {
 					publishProgress(object);
+				} else if (request.type == SearchAmenityRequest.SEARCH_FURTHER) {
+					if(!updateExisting.contains(id)){
+						publishProgress(object);
+					}
 				}
+				return true;
 			}
-			
-			return true;
+			return false;
 		}
 		
 	}
@@ -685,9 +691,11 @@ public class SearchPOIActivity extends OsmandListActivity implements SensorEvent
 			this.setNotifyOnChange(false);
 		}
 		
+
 		public List<Amenity> getOriginalAmenityList() {
 			return originalAmenityList;
 		}
+
 
 		public void setNewModel(List<Amenity> amenityList, String filter) {
 			setNotifyOnChange(false);
@@ -880,13 +888,13 @@ public class SearchPOIActivity extends OsmandListActivity implements SensorEvent
 					setLocation(null);
 				}
 				if (!isRunningOnEmulator() && service.isProviderEnabled(LocationManager.NETWORK_PROVIDER)) {
-					if (!Algoritms.objectEquals(currentLocationProvider, LocationManager.NETWORK_PROVIDER)) {
+					if (!Algorithms.objectEquals(currentLocationProvider, LocationManager.NETWORK_PROVIDER)) {
 						currentLocationProvider = LocationManager.NETWORK_PROVIDER;
 						service.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, GPS_TIMEOUT_REQUEST, GPS_DIST_REQUEST, this);
 					}
 				}
 			} else if (LocationProvider.AVAILABLE == status) {
-				if (!Algoritms.objectEquals(currentLocationProvider, LocationManager.GPS_PROVIDER)) {
+				if (!Algorithms.objectEquals(currentLocationProvider, LocationManager.GPS_PROVIDER)) {
 					currentLocationProvider = LocationManager.GPS_PROVIDER;
 					service.removeUpdates(networkListener);
 				}

@@ -18,7 +18,6 @@ import net.osmand.plus.views.OsmandMapTileView;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
-import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
@@ -27,9 +26,6 @@ import android.graphics.Paint;
 import android.graphics.Paint.Style;
 import android.graphics.PointF;
 import android.graphics.RectF;
-import android.media.MediaPlayer;
-import android.media.MediaPlayer.OnPreparedListener;
-import android.net.Uri;
 import android.util.DisplayMetrics;
 import android.view.WindowManager;
 import android.widget.Toast;
@@ -104,7 +100,7 @@ public class AudioNotesLayer extends OsmandMapLayer implements IContextMenuProvi
 
 	@Override
 	public boolean drawInScreenPixels() {
-		return false;
+		return true;
 	}
 	
 	@Override
@@ -114,8 +110,9 @@ public class AudioNotesLayer extends OsmandMapLayer implements IContextMenuProvi
 			OnContextMenuClick listener = new ContextMenuAdapter.OnContextMenuClick() {
 				@Override
 				public void onContextMenuClick(int itemId, int pos, boolean isChecked, DialogInterface dialog) {
-					if (itemId == R.string.recording_context_menu_play) {
-						playRecording(r);
+					if (itemId == R.string.recording_context_menu_play ||
+							itemId == R.string.recording_context_menu_show) {
+						plugin.playRecording(view.getContext(), r);
 					} else if (itemId == R.string.recording_context_menu_delete) {
 						deleteRecording(r);
 					}
@@ -123,56 +120,12 @@ public class AudioNotesLayer extends OsmandMapLayer implements IContextMenuProvi
 
 
 			};
-			adapter.registerItem(R.string.recording_context_menu_play, 0, listener, -1);
-			adapter.registerItem(R.string.recording_context_menu_delete, 0, listener, -1);
-		}
-	}
-	
-	private void playRecording(final Recording r) {
-		final MediaPlayer player = new MediaPlayer();
-		final AccessibleAlertBuilder dlg = new AccessibleAlertBuilder(view.getContext());
-		dlg.setMessage(view.getContext().getString(R.string.recording_playing, r.getDescription(view.getContext())));
-		dlg.setPositiveButton(R.string.recording_open_external_player, new OnClickListener() {
-			
-			@Override
-			public void onClick(DialogInterface v, int w) {
-				if(player.isPlaying()) {
-					player.stop();
-				}
-				Intent vint = new Intent(Intent.ACTION_VIEW);
-		    	vint.setDataAndType(Uri.fromFile(r.file), "video/*");
-		    	vint.setFlags(0x10000000);
-				try {
-					view.getContext().startActivity(vint);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
+			if(r.isPhoto()) {
+				adapter.registerItem(R.string.recording_context_menu_show, R.drawable.list_activities_play_note, listener, -1);
+			} else {
+				adapter.registerItem(R.string.recording_context_menu_play, R.drawable.list_activities_play_note, listener, -1);
 			}
-		});
-		dlg.setNegativeButton(R.string.default_buttons_cancel, new OnClickListener(){
-
-			@Override
-			public void onClick(DialogInterface dialog, int which) {
-				if(player.isPlaying()) {
-					player.stop();
-				}				
-				
-			}
-			
-		});
-		try {
-			player.setDataSource(r.file.getAbsolutePath());
-			player.setOnPreparedListener(new OnPreparedListener() {
-
-				@Override
-				public void onPrepared(MediaPlayer mp) {
-					dlg.show();
-					player.start();
-				}
-			});
-			player.prepareAsync();
-		} catch (Exception e) {
-			AccessibleToast.makeText(activity, R.string.recording_can_not_be_played, Toast.LENGTH_SHORT).show();
+			adapter.registerItem(R.string.recording_context_menu_delete, R.drawable.list_activities_remove_note, listener, -1);
 		}
 	}
 	
@@ -220,9 +173,7 @@ public class AudioNotesLayer extends OsmandMapLayer implements IContextMenuProvi
 		int ey = (int) point.y;
 		int compare = getRadiusPoi(view.getZoom());
 		int radius = getRadiusPoi(view.getZoom()) * 3 / 2;
-		List<Recording> objects = plugin.getRecordings().getAllObjects();
-		for (int i = 0; i < objects.size(); i++) {
-			Recording n = objects.get(i);
+		for (Recording n : plugin.getAllRecordings()) {
 			int x = view.getRotatedMapXForPoint(n.getLatitude(), n.getLongitude());
 			int y = view.getRotatedMapYForPoint(n.getLatitude(), n.getLongitude());
 			if (Math.abs(x - ex) <= compare && Math.abs(y - ey) <= compare) {

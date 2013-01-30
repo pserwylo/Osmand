@@ -6,8 +6,11 @@ import java.util.List;
 import java.util.Set;
 
 import net.osmand.IProgress;
-import net.osmand.LogUtil;
+import net.osmand.PlatformUtil;
 import net.osmand.access.AccessibilityPlugin;
+import net.osmand.plus.activities.LocalIndexInfo;
+import net.osmand.plus.activities.LocalIndexesActivity;
+import net.osmand.plus.activities.LocalIndexesActivity.LoadLocalIndexTask;
 import net.osmand.plus.activities.MapActivity;
 import net.osmand.plus.activities.SettingsActivity;
 import net.osmand.plus.audionotes.AudioVideoNotesPlugin;
@@ -33,7 +36,7 @@ public abstract class OsmandPlugin {
 	
 	private static List<OsmandPlugin> installedPlugins = new ArrayList<OsmandPlugin>();  
 	private static List<OsmandPlugin> activePlugins = new ArrayList<OsmandPlugin>();
-	private static final Log LOG = LogUtil.getLog(OsmandPlugin.class);
+	private static final Log LOG = PlatformUtil.getLog(OsmandPlugin.class);
 	
 	private static final String PARKING_PLUGIN_COMPONENT = "net.osmand.parkingPlugin"; //$NON-NLS-1$
 	private static final String SRTM_PLUGIN_COMPONENT_PAID = "net.osmand.srtmPlugin.paid"; //$NON-NLS-1$
@@ -137,7 +140,19 @@ public abstract class OsmandPlugin {
 	
 	public void registerOptionsMenuItems(MapActivity mapActivity, OptionsMenuHelper helper) {}
 	
+	public void loadLocalIndexes(List<LocalIndexInfo> result, LoadLocalIndexTask loadTask) {};
+	
+	public void contextMenuLocalIndexes(LocalIndexesActivity la, LocalIndexInfo info, ContextMenuAdapter adapter) {};
+	
+	public void updateLocalIndexDescription(LocalIndexInfo info) {}
+	
+	public void optionsMenuLocalIndexes(LocalIndexesActivity localIndexesActivity, ContextMenuAdapter optionsMenuAdapter) {};
+	
 	public List<String> indexingFiles(IProgress progress) {	return null;}
+	
+	public boolean mapActivityKeyUp(MapActivity mapActivity, int keyCode) {
+		return false;
+	}
 	
 	public void onMapActivityExternalResult(int requestCode, int resultCode, Intent data) {
 	}
@@ -252,6 +267,30 @@ public abstract class OsmandPlugin {
 			plugin.registerOptionsMenuItems(map, helper);
 		}
 	}
+	public static void onUpdateLocalIndexDescription(LocalIndexInfo info) {
+		for (OsmandPlugin plugin : activePlugins) {
+			plugin.updateLocalIndexDescription(info);
+		}
+	}
+	
+	public static void onLoadLocalIndexes(List<LocalIndexInfo> result, LoadLocalIndexTask loadTask) {
+		for (OsmandPlugin plugin : activePlugins) {
+			plugin.loadLocalIndexes(result, loadTask);
+		}		
+	}
+	
+	public static void onContextMenuLocalIndexes(LocalIndexesActivity la, LocalIndexInfo info, ContextMenuAdapter adapter) {
+		for (OsmandPlugin plugin : activePlugins) {
+			plugin.contextMenuLocalIndexes(la, info, adapter);
+		}
+	}
+	public static void onOptionsMenuLocalIndexes(LocalIndexesActivity localIndexesActivity, ContextMenuAdapter optionsMenuAdapter) {
+		for (OsmandPlugin plugin : activePlugins) {
+			plugin.optionsMenuLocalIndexes(localIndexesActivity, optionsMenuAdapter);
+		}
+		
+	}
+
 
 	private static boolean installPlugin(String packageInfo, 
 			String pluginId, OsmandApplication app, OsmandPlugin plugin) {
@@ -271,6 +310,13 @@ public abstract class OsmandPlugin {
 		}
 	}
 
+	public static boolean onMapActivityKeyUp(MapActivity mapActivity, int keyCode) {
+		for(OsmandPlugin p : installedPlugins){
+			if(p.mapActivityKeyUp(mapActivity, keyCode))
+				return true;
+		}
+		return false;
+	}
 
-	
+
 }

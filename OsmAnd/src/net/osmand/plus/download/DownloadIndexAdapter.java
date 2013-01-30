@@ -1,17 +1,14 @@
 package net.osmand.plus.download;
 
-import static net.osmand.data.IndexConstants.EXTRA_EXT;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
+import net.osmand.IndexConstants;
 import net.osmand.plus.ClientContext;
 import net.osmand.plus.OsmandApplication;
-import net.osmand.plus.OsmandSettings;
 import net.osmand.plus.R;
-import net.osmand.plus.ResourceManager;
 import net.osmand.plus.activities.DownloadIndexActivity;
 import net.osmand.plus.activities.OsmandBaseExpandableListAdapter;
 import android.graphics.Color;
@@ -47,13 +44,12 @@ public class DownloadIndexAdapter extends OsmandBaseExpandableListAdapter implem
 	}
 
 	public void updateLoadedFiles() {
-		OsmandSettings settings = getMyApplication().getSettings();
 		indexActivatedFileNames = getMyApplication().getResourceManager().getIndexFileNames();
-		DownloadIndexActivity.listWithAlternatives(settings.extendOsmandPath(ResourceManager.APP_DIR),
-				EXTRA_EXT, indexActivatedFileNames);
+		DownloadIndexActivity.listWithAlternatives(getMyApplication().getAppPath(""),
+				IndexConstants.EXTRA_EXT, indexActivatedFileNames);
 		indexFileNames = getMyApplication().getResourceManager().getIndexFileNames();
-		DownloadIndexActivity.listWithAlternatives(settings.extendOsmandPath(ResourceManager.APP_DIR),
-				EXTRA_EXT, indexFileNames);
+		DownloadIndexActivity.listWithAlternatives(getMyApplication().getAppPath(""),
+				IndexConstants.EXTRA_EXT, indexFileNames);
 		getMyApplication().getResourceManager().getBackupIndexes(indexFileNames);
 	}
 

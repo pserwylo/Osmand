@@ -16,15 +16,13 @@ import net.londatiga.android.ActionItem;
 import net.londatiga.android.QuickAction;
 import net.osmand.AndroidUtils;
 import net.osmand.CallbackWithObject;
-import net.osmand.FavouritePoint;
-import net.osmand.GPXUtilities;
-import net.osmand.GPXUtilities.GPXFile;
+import net.osmand.IndexConstants;
 import net.osmand.Location;
-import net.osmand.LogUtil;
-import net.osmand.Version;
+import net.osmand.PlatformUtil;
 import net.osmand.access.AccessibleAlertBuilder;
 import net.osmand.access.AccessibleToast;
 import net.osmand.data.Amenity;
+import net.osmand.data.FavouritePoint;
 import net.osmand.map.ITileSource;
 import net.osmand.osm.LatLon;
 import net.osmand.osm.MapUtils;
@@ -33,14 +31,16 @@ import net.osmand.plus.ApplicationMode;
 import net.osmand.plus.ContextMenuAdapter;
 import net.osmand.plus.ContextMenuAdapter.OnContextMenuClick;
 import net.osmand.plus.FavouritesDbHelper;
+import net.osmand.plus.GPXUtilities;
+import net.osmand.plus.GPXUtilities.GPXFile;
 import net.osmand.plus.OptionsMenuHelper;
 import net.osmand.plus.OptionsMenuHelper.OnOptionsMenuClick;
 import net.osmand.plus.OsmandApplication;
 import net.osmand.plus.OsmandPlugin;
 import net.osmand.plus.OsmandSettings;
 import net.osmand.plus.R;
-import net.osmand.plus.ResourceManager;
 import net.osmand.plus.TargetPointsHelper;
+import net.osmand.plus.Version;
 import net.osmand.plus.activities.search.SearchActivity;
 import net.osmand.plus.routing.RouteProvider.GPXRouteParams;
 import net.osmand.plus.routing.RoutingHelper;
@@ -215,7 +215,6 @@ public class MapActivityActions implements DialogProvider {
 		final String[] names = new String[points.size()];
 		if(names.length == 0){
 			AccessibleToast.makeText(mapActivity, getString(R.string.fav_points_not_exist), Toast.LENGTH_SHORT).show();
-			helper.close();
 			return null;
 		}
 			
@@ -332,7 +331,7 @@ public class MapActivityActions implements DialogProvider {
 						mapView.refreshMap();
 					}
 				} catch(Exception e) {
-					Log.e(LogUtil.TAG, "Error updating local data", e); //$NON-NLS-1$
+					Log.e(PlatformUtil.TAG, "Error updating local data", e); //$NON-NLS-1$
 					showToast(getString(R.string.update_poi_error_local));
 				} finally {
 					Dialog prog = mapActivity.getProgressDlg();
@@ -580,7 +579,7 @@ public class MapActivityActions implements DialogProvider {
 				if (to != null) {
 					targets.navigateToPoint(mapActivity, to, false, -1);
 				}
-				if (!targets.checkPointToNavigate(mapActivity)) {
+				if (!targets.checkPointToNavigate(getMyApplication())) {
 					return;
 				}
 				Location from = fromOrCurrent;
@@ -615,7 +614,7 @@ public class MapActivityActions implements DialogProvider {
 				if(to != null) {
 					targets.navigateToPoint(mapActivity, to, false, -1);
 				}
-				if (!targets.checkPointToNavigate(mapActivity)) {
+				if (!targets.checkPointToNavigate(getMyApplication())) {
 					return;
 				}
 				boolean msg = true;
@@ -745,8 +744,7 @@ public class MapActivityActions implements DialogProvider {
 	
 	public static  Dialog createSaveDirections(Activity activity) {
 		final OsmandApplication app = ((OsmandApplication) activity.getApplication());
-		OsmandSettings settings = ((OsmandApplication) activity.getApplication()).getSettings();
-		final File fileDir = settings.extendOsmandPath(ResourceManager.GPX_PATH);
+		final File fileDir = app.getAppPath(IndexConstants.GPX_INDEX_DIR);
 		final Dialog dlg = new Dialog(activity);
 		dlg.setTitle(R.string.save_route_dialog_title);
 		dlg.setContentView(R.layout.save_directions_dialog);
@@ -876,7 +874,7 @@ public class MapActivityActions implements DialogProvider {
 						getDirections(null, new LatLon(latitude, longitude), true);
 					}
 				} else if (standardId == R.string.context_menu_item_show_route) {
-					if (targets.checkPointToNavigate(mapActivity)) {
+					if (targets.checkPointToNavigate(getMyApplication())) {
 						Location loc = new Location("map");
 						loc.setLatitude(latitude);
 						loc.setLongitude(longitude);
@@ -1043,17 +1041,7 @@ public class MapActivityActions implements DialogProvider {
 					}
 					@Override
 					public boolean onClick(MenuItem item) {
-						if (routingHelper.isRouteCalculated() || routingHelper.isFollowingMode() || routingHelper.isRouteBeingCalculated()) {
-							routingHelper.setFinalAndCurrentLocation(null, new ArrayList<LatLon>(), mapActivity.getLastKnownLocation(),
-									routingHelper.getCurrentGPXRoute());
-							// restore default mode
-							boolean changed = settings.APPLICATION_MODE.set(settings.PREV_APPLICATION_MODE.get());
-							mapActivity.updateApplicationModeSettings();
-							mapView.refreshMap(changed);
-						} else {
-							mapActivity.getTargetPoints().clearPointToNavigate(mapActivity, true);
-						}
-						mapView.refreshMap();
+						stopNavigationActionConfirm(mapView);
 						return true;
 					}
 				});
@@ -1166,6 +1154,55 @@ public class MapActivityActions implements DialogProvider {
 		IntermediatePointsDialog.openIntermediatePointsDialog(mapActivity);
 	}
 	
+	public void stopNavigationAction(final OsmandMapTileView mapView) {
+		if (routingHelper.isRouteCalculated() || routingHelper.isFollowingMode() || routingHelper.isRouteBeingCalculated()) {
+			routingHelper.setFinalAndCurrentLocation(null, new ArrayList<LatLon>(), mapActivity.getLastKnownLocation(),
+					routingHelper.getCurrentGPXRoute());
+			// restore default mode
+			boolean changed = settings.APPLICATION_MODE.set(settings.PREV_APPLICATION_MODE.get());
+			mapActivity.updateApplicationModeSettings();
+			mapView.refreshMap(changed);
+		} else {
+			mapActivity.getTargetPoints().clearPointToNavigate(mapActivity, true);
+			mapView.refreshMap();
+		}
+		
+	}
+	
+	public void stopNavigationActionConfirm(final OsmandMapTileView mapView){
+		Builder builder = new AlertDialog.Builder(mapActivity);
+		
+		if (routingHelper.isRouteCalculated() || routingHelper.isFollowingMode() || routingHelper.isRouteBeingCalculated()) {
+			// Stop the navigation
+			builder.setTitle(getString(R.string.stop_routing));
+			builder.setMessage(getString(R.string.stop_routing_confirm));
+			builder.setPositiveButton(R.string.default_buttons_yes, new DialogInterface.OnClickListener() {
+				@Override
+				public void onClick(DialogInterface dialog, int which) {
+					routingHelper.setFinalAndCurrentLocation(null, new ArrayList<LatLon>(), mapActivity.getLastKnownLocation(),
+							routingHelper.getCurrentGPXRoute());
+					// restore default mode
+					boolean changed = settings.APPLICATION_MODE.set(settings.PREV_APPLICATION_MODE.get());
+					mapActivity.updateApplicationModeSettings();
+					mapView.refreshMap(changed);
+				}
+			});
+		} else {
+			// Clear the destination point
+			builder.setTitle(getString(R.string.stop_navigation));
+			builder.setMessage(getString(R.string.clear_dest_confirm));
+			builder.setPositiveButton(R.string.default_buttons_yes, new DialogInterface.OnClickListener() {
+				@Override
+				public void onClick(DialogInterface dialog, int which) {
+					mapActivity.getTargetPoints().clearPointToNavigate(mapActivity, true);
+					mapView.refreshMap();
+				}
+			});
+		}
+
+		builder.setNegativeButton(R.string.default_buttons_no, null);
+		builder.show();
+	}
 	
 
 	private void startGpsStatusIntent() {
@@ -1251,7 +1288,7 @@ public class MapActivityActions implements DialogProvider {
 				if(onShow != null) {
 					onShow.onClick(v);
 				}
-				app.getTargetPointsHelper().navigatePointDialogAndLaunchMap(activity,
+				navigatePointDialogAndLaunchMap(activity,
 						location.getLatitude(), location.getLongitude(), name);
 				qa.dismiss();
 			}
@@ -1273,5 +1310,43 @@ public class MapActivityActions implements DialogProvider {
 //		});
 //		qa.addActionItem(directionsTo);
 	}
+    
+    
+    public static void navigatePointDialogAndLaunchMap(final Activity act, final double lat, final double lon, final String name){
+    	OsmandApplication ctx = (OsmandApplication) act.getApplication();
+    	final TargetPointsHelper targetPointsHelper = ctx.getTargetPointsHelper();
+    	final OsmandSettings settings = ctx.getSettings();
+    	if(targetPointsHelper.getPointToNavigate() != null) {
+    		Builder builder = new AlertDialog.Builder(act);
+    		builder.setTitle(R.string.new_destination_point_dialog);
+    		builder.setItems(new String[] {
+    				act.getString(R.string.replace_destination_point),
+    				act.getString(R.string.add_as_first_destination_point),
+    				act.getString(R.string.add_as_last_destination_point)
+    		}, new DialogInterface.OnClickListener() {
+				@Override
+				public void onClick(DialogInterface dialog, int which) {
+					if(which == 0) {
+						settings.setPointToNavigate(lat, lon, true, name);
+					} else if(which == 2) {
+						int sz = targetPointsHelper.getIntermediatePoints().size();
+						LatLon pt = targetPointsHelper.getPointToNavigate();
+						settings.insertIntermediatePoint(pt.getLatitude(), pt.getLongitude(), 
+								settings.getPointNavigateDescription(), sz, true);
+						settings.setPointToNavigate(lat, lon, true, name);
+					} else {
+						settings.insertIntermediatePoint(lat, lon, name, 0, true);
+					}
+					targetPointsHelper.updatePointsFromSettings();
+					MapActivity.launchMapActivityMoveToTop(act);
+				}
+			});
+    		builder.show();
+    	} else {
+    		settings.setPointToNavigate(lat, lon, true, name);
+    		targetPointsHelper.updatePointsFromSettings();
+    		MapActivity.launchMapActivityMoveToTop(act);
+    	}
+    }
     
 }

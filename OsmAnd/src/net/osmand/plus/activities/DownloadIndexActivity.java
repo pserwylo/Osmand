@@ -1,7 +1,5 @@
 package net.osmand.plus.activities;
 
-import static net.osmand.data.IndexConstants.BINARY_MAP_INDEX_EXT;
-import static net.osmand.data.IndexConstants.EXTRA_EXT;
 
 import java.io.File;
 import java.io.FilenameFilter;
@@ -13,12 +11,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
-import net.osmand.Algoritms;
 import net.osmand.IProgress;
-import net.osmand.LogUtil;
-import net.osmand.Version;
+import net.osmand.IndexConstants;
+import net.osmand.PlatformUtil;
 import net.osmand.access.AccessibleToast;
-import net.osmand.data.IndexConstants;
 import net.osmand.map.RegionCountry;
 import net.osmand.map.RegionRegistry;
 import net.osmand.plus.ClientContext;
@@ -29,6 +25,7 @@ import net.osmand.plus.OsmandSettings.OsmandPreference;
 import net.osmand.plus.ProgressDialogImplementation;
 import net.osmand.plus.R;
 import net.osmand.plus.ResourceManager;
+import net.osmand.plus.Version;
 import net.osmand.plus.download.DownloadActivityType;
 import net.osmand.plus.download.DownloadEntry;
 import net.osmand.plus.download.DownloadFileHelper;
@@ -40,6 +37,7 @@ import net.osmand.plus.download.IndexItem;
 import net.osmand.plus.download.IndexItemCategory;
 import net.osmand.plus.download.SrtmIndexItem;
 import net.osmand.plus.srtmplugin.SRTMPlugin;
+import net.osmand.util.Algorithms;
 import android.app.AlertDialog;
 import android.app.AlertDialog.Builder;
 import android.app.Dialog;
@@ -65,7 +63,7 @@ import android.widget.Toast;
 
 public class DownloadIndexActivity extends OsmandExpandableListActivity {
 	
-	private static final org.apache.commons.logging.Log log = LogUtil.getLog(DownloadIndexActivity.class);
+	private static final org.apache.commons.logging.Log log = PlatformUtil.getLog(DownloadIndexActivity.class);
 	
 	/** menus **/
 	private static final int RELOAD_ID = 0;
@@ -497,13 +495,13 @@ public class DownloadIndexActivity extends OsmandExpandableListActivity {
 	
 	private Map<String, String> listAlreadyDownloadedWithAlternatives() {
 		Map<String, String> files = new TreeMap<String, String>();
-		listWithAlternatives(settings.extendOsmandPath(ResourceManager.BACKUP_PATH),BINARY_MAP_INDEX_EXT, files);
-		listWithAlternatives(settings.extendOsmandPath(ResourceManager.APP_DIR),BINARY_MAP_INDEX_EXT, files);
-		listWithAlternatives(settings.extendOsmandPath(ResourceManager.APP_DIR),EXTRA_EXT, files);
+		listWithAlternatives(getMyApplication().getAppPath(IndexConstants.BACKUP_INDEX_DIR),IndexConstants.BINARY_MAP_INDEX_EXT, files);
+		listWithAlternatives(getMyApplication().getAppPath(IndexConstants.MAPS_PATH),IndexConstants.BINARY_MAP_INDEX_EXT, files);
+		listWithAlternatives(getMyApplication().getAppPath(IndexConstants.MAPS_PATH),IndexConstants.EXTRA_EXT, files);
 		if(OsmandPlugin.getEnabledPlugin(SRTMPlugin.class) != null) {
-			listWithAlternatives(settings.extendOsmandPath(ResourceManager.SRTM_PATH),BINARY_MAP_INDEX_EXT, files);
+			listWithAlternatives(getMyApplication().getAppPath(IndexConstants.SRTM_INDEX_DIR),IndexConstants.BINARY_MAP_INDEX_EXT, files);
 		}
-		listWithAlternatives(settings.extendOsmandPath(ResourceManager.VOICE_PATH),"", files);
+		listWithAlternatives(getMyApplication().getAppPath(IndexConstants.VOICE_INDEX_DIR),"", files);
 		return files;
 	}
 	
@@ -579,7 +577,7 @@ public class DownloadIndexActivity extends OsmandExpandableListActivity {
 			sz += es.sizeMB;
 		}
 		// get availabile space 
-		File dir = settings.extendOsmandPath("");
+		File dir = getMyApplication().getAppPath("").getParentFile();
 		double asz = -1;
 		if(dir.canRead()){
 			StatFs fs = new StatFs(dir.getAbsolutePath());
@@ -699,7 +697,7 @@ public class DownloadIndexActivity extends OsmandExpandableListActivity {
 									downloads.set(downloads.get() + 1);
 								}
 								if (entry.existingBackupFile != null) {
-									Algoritms.removeAllFiles(entry.existingBackupFile);
+									Algorithms.removeAllFiles(entry.existingBackupFile);
 								}
 								trackEvent(entry);
 								publishProgress(entry);
@@ -741,7 +739,7 @@ public class DownloadIndexActivity extends OsmandExpandableListActivity {
 			} else {
 				v += " test";
 			}
-			new DownloadTracker().trackEvent(DownloadIndexActivity.this, v, Version.getAppName(getMyApplication()),
+			new DownloadTracker().trackEvent(getMyApplication(), v, Version.getAppName(getMyApplication()),
 					entry.baseName, 1, DownloadIndexActivity.this.getString(R.string.ga_api_key));
 		}
 

@@ -9,8 +9,8 @@ import java.util.EnumSet;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
-import net.osmand.Algoritms;
 import net.osmand.access.AccessibleToast;
+import net.osmand.binary.RouteDataObject;
 import net.osmand.plus.ApplicationMode;
 import net.osmand.plus.OsmandApplication;
 import net.osmand.plus.OsmandPlugin;
@@ -25,6 +25,7 @@ import net.osmand.plus.routing.RoutingHelper;
 import net.osmand.plus.views.MapInfoControls.MapInfoControlRegInfo;
 import net.osmand.render.RenderingRuleProperty;
 import net.osmand.render.RenderingRulesStorage;
+import net.osmand.util.Algorithms;
 import android.app.AlertDialog;
 import android.app.AlertDialog.Builder;
 import android.content.Context;
@@ -226,7 +227,7 @@ public class MapInfoLayer extends OsmandMapLayer {
 		mapInfoControls.registerTopWidget(createLockInfo(map), R.drawable.lock_enabled, R.string.bg_service_screen_lock, "bgService", 
 				MapInfoControls.LEFT_CONTROL, none, 15);
 		backToLocation = createBackToLocation(map);
-		mapInfoControls.registerTopWidget(backToLocation, R.drawable.default_location, R.string.map_widget_back_to_loc, "back_to_location", MapInfoControls.RIGHT_CONTROL, all, 5);
+		mapInfoControls.registerTopWidget(backToLocation, R.drawable.widget_backtolocation, R.string.map_widget_back_to_loc, "back_to_location", MapInfoControls.RIGHT_CONTROL, all, 5);
 		
 		
 		View globus = createGlobus();
@@ -473,7 +474,7 @@ public class MapInfoLayer extends OsmandMapLayer {
 	
 	public void fillAppearanceWidgets(Set<MapInfoControlRegInfo> widgets, String category, ArrayList<Object> registry) {
 		for(MapInfoControlRegInfo w : widgets ) {
-			if(Algoritms.objectEquals(w.getCategory(), category)) {
+			if(Algorithms.objectEquals(w.getCategory(), category)) {
 				registry.add(w);
 			}
 		}
@@ -636,7 +637,7 @@ public class MapInfoLayer extends OsmandMapLayer {
 				boxTopL = R.drawable.box_top_l;
 				expand = R.drawable.box_expand;
 			}
-			alarmControl.setBackgroundDrawable(boxFree);
+			lanesControl.setBackgroundDrawable(boxFree);
 			rightStack.setTopDrawable(view.getResources().getDrawable(boxTopR));
 			rightStack.setStackDrawable(boxTopStack);
 
@@ -902,8 +903,13 @@ public class MapInfoLayer extends OsmandMapLayer {
 					int di = map.getMapLayers().getRouteInfoLayer().getDirectionInfo();
 					if (di >= 0 && map.getMapLayers().getRouteInfoLayer().isVisible()) {
 						RouteDirectionInfo next = routingHelper.getRouteDirections().get(di);
-						text = routingHelper.formatStreetName(next.getStreetName(), next.getRef());
+						text = RoutingHelper.formatStreetName(next.getStreetName(), next.getRef());
 					}
+				}
+			} else if(map.isMapLinkedToLocation()) {
+				RouteDataObject rt = map.getLastRouteDataObject(); 
+				if(rt != null) {
+					text = RoutingHelper.formatStreetName(rt.getName(), rt.getRef());
 				}
 			}
 			if(text == null) {

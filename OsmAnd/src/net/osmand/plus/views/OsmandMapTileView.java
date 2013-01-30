@@ -6,15 +6,15 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import net.osmand.LogUtil;
-import net.osmand.OsmAndFormatter;
+import net.osmand.PlatformUtil;
 import net.osmand.access.AccessibleToast;
 import net.osmand.access.MapExplorer;
-import net.osmand.data.MapTileDownloader.DownloadRequest;
-import net.osmand.data.MapTileDownloader.IMapDownloaderCallback;
 import net.osmand.map.IMapLocationListener;
+import net.osmand.map.MapTileDownloader.DownloadRequest;
+import net.osmand.map.MapTileDownloader.IMapDownloaderCallback;
 import net.osmand.osm.LatLon;
 import net.osmand.osm.MapUtils;
+import net.osmand.plus.OsmAndFormatter;
 import net.osmand.plus.OsmandApplication;
 import net.osmand.plus.OsmandSettings;
 import net.osmand.plus.R;
@@ -69,7 +69,7 @@ public class OsmandMapTileView extends SurfaceView implements IMapDownloaderCall
 		public boolean onPressEvent(PointF point);
 	}
 
-	protected static final Log log = LogUtil.getLog(OsmandMapTileView.class);
+	protected static final Log log = PlatformUtil.getLog(OsmandMapTileView.class);
 	/**MapTree
 	 * zoom level - could be float to show zoomed tiles
 	 */

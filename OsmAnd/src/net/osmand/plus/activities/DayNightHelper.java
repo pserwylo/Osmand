@@ -5,10 +5,10 @@ import java.util.Date;
 import java.util.List;
 import java.util.TimeZone;
 
-import net.osmand.LogUtil;
-import net.osmand.SunriseSunset;
+import net.osmand.PlatformUtil;
 import net.osmand.plus.OsmandApplication;
 import net.osmand.plus.OsmandSettings.DayNightMode;
+import net.osmand.util.SunriseSunset;
 
 import org.apache.commons.logging.Log;
 
@@ -38,7 +38,7 @@ import android.location.LocationManager;
  * @author pavol.zibrita
  */
 public class DayNightHelper implements SensorEventListener {
-	private static final Log log = LogUtil.getLog(DayNightHelper.class);
+	private static final Log log = PlatformUtil.getLog(DayNightHelper.class);
 	
 	private final OsmandApplication osmandApplication;
 

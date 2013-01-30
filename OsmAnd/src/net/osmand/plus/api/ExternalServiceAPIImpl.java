@@ -1,6 +1,10 @@
 package net.osmand.plus.api;
 
+import net.osmand.PlatformUtil;
 import net.osmand.plus.OsmandApplication;
+
+import org.apache.commons.logging.Log;
+
 import android.content.Context;
 import android.hardware.Sensor;
 import android.hardware.SensorManager;
@@ -11,6 +15,7 @@ import android.os.Environment;
 public class ExternalServiceAPIImpl implements ExternalServiceAPI {
 
 	private OsmandApplication app;
+	private static final Log log = PlatformUtil.getLog(ExternalServiceAPIImpl.class);
 
 	public ExternalServiceAPIImpl(OsmandApplication app) {
 		this.app = app;
@@ -45,6 +50,19 @@ public class ExternalServiceAPIImpl implements ExternalServiceAPI {
 	@Override
 	public String getExternalStorageDirectory() {
 		return Environment.getExternalStorageDirectory().getAbsolutePath();
+	}
+
+	@Override
+	public AudioFocusHelper getAudioFocuseHelper() {
+		if (android.os.Build.VERSION.SDK_INT >= 8) {
+			try {
+				return (AudioFocusHelper) Class.forName("net.osmand.plus.api.AudioFocusHelperImpl").newInstance();
+			} catch (Exception e) {
+				log.error(e.getMessage(), e);
+				return null;
+			}
+		}
+		return null;
 	}
 
 }
